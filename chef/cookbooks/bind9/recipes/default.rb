@@ -102,7 +102,7 @@ bash "build-domain-file" do
 
     rm -rf /tmp/tmp.$$
 EOH
-  only_if "[[ /etc/bind/netargs -nt /etc/bind/named.conf.local || /etc/bind/hosts -nt /etc/bind/named.conf.local ]]"
+  only_if "test /etc/bind/netargs -nt /etc/bind/named.conf.local || test /etc/bind/hosts -nt /etc/bind/named.conf.local"
   notifies :restart, resources(:service => "bind9"), :immediately
 end
 

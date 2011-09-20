@@ -32,3 +32,13 @@ locale_additions:
           attributes: Attributes
         edit_deployment: 
           deployment: Deployment
+
+debs:
+  pkgs:
+    - bind9
+    - bind9utils
+
+rpms:
+  pkgs:
+    - bind
+    - bind-utils

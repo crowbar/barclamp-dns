@@ -19,6 +19,8 @@ barclamp:
   name: dns
   display: DNS
   version: 0
+  member:
+    - crowbar
 
 crowbar:
   layout: 1

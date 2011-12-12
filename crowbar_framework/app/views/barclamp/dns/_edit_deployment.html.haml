@@ -4,7 +4,9 @@
 
 :javascript
   $(document).ready(function(){
-    var constraints = { "dns-server": { "unique": false, "count": 1 }, "dns-client": { "unique": false, "count": -1 } };
+    var constraints = { 
+        "dns-server": { "unique": false, "count": 1, "admin":true }, 
+        "dns-client": { "unique": false, "count": -1, "admin":true } };
     node_selector($('#drag_drop'), constraints);
   });
 

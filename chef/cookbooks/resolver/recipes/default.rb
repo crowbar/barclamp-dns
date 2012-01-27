@@ -19,7 +19,7 @@
 #
 
 env_filter = " AND dns_config_environment:#{node[:dns][:config][:environment]}"
-nodes = search(:node, "roles:dns-server#{env_filter}")
+nodes = search(:node, "roles:dns-server")
 
 dns_list = []
 if !nodes.nil? and !nodes.empty?

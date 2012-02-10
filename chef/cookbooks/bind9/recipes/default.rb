@@ -97,6 +97,7 @@ bash "build-domain-file" do
     rm -f boot.cacheonly conf.cacheonly db.127.0.0 named.boot dns.hosts
     sed -i 's/"db/"\\/etc\\/bind\\/db/' named.conf.local
     grep zone named.conf.local | grep -v "zone \\".\\"" | grep -v "0.0.127" > named.conf.new
+    echo 'include "/etc/bind/named.conf.options";' >> named.conf.new
     mv named.conf.new named.conf.local
     cp * /etc/bind
 

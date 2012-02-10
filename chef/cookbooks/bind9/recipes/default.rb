@@ -65,6 +65,15 @@ service "bind9" do
   action :enable
 end
 
+file "/etc/bind/named.conf.local" do
+  owner "root"
+  group "root"
+  mode 0644
+  content ""
+  action :create
+  not_if do File.exists?("/etc/bind/named.conf.local") end
+end
+
 file "/etc/bind/hosts" do
   owner "root"
   group "root"

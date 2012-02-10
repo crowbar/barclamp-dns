@@ -101,6 +101,10 @@ bash "build-domain-file" do
     mv named.conf.new named.conf.local
     cp * /etc/bind
 
+    touch -r /etc/motd /etc/bind/hosts
+    touch -r /etc/motd /etc/bind/netargs
+    touch -r /etc/motd /etc/bind/named.conf.local
+
     rm -rf /tmp/tmp.$$
 EOH
   only_if "test /etc/bind/netargs -nt /etc/bind/named.conf.local || test /etc/bind/hosts -nt /etc/bind/named.conf.local"

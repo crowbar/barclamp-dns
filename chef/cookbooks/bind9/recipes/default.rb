@@ -65,15 +65,6 @@ service "bind9" do
   action :enable
 end
 
-file "/etc/bind/named.conf.local" do
-  owner "root"
-  group "root"
-  mode 0644
-  content ""
-  action :create
-  not_if do File.exists?("/etc/bind/named.conf.local") end
-end
-
 file "/etc/bind/hosts" do
   owner "root"
   group "root"
@@ -109,6 +100,10 @@ bash "build-domain-file" do
     echo 'include "/etc/bind/named.conf.options";' >> named.conf.new
     mv named.conf.new named.conf.local
     cp * /etc/bind
+
+    touch -r /etc/motd /etc/bind/hosts
+    touch -r /etc/motd /etc/bind/netargs
+    touch -r /etc/motd /etc/bind/named.conf.local
 
     rm -rf /tmp/tmp.$$
 EOH

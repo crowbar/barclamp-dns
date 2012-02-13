@@ -32,6 +32,30 @@ end
 
 directory "/etc/bind"
 
+template "/etc/bind/named.conf" do
+  source "named.conf.erb"
+  variables(:forwarders => node[:dns][:forwarders])
+  mode 0644
+  owner "root"
+  case node[:platform]
+  when "ubuntu","debian" then group "bind"
+  when "centos","redhat" then group "named"
+  end
+  notifies :restart, "service[bind9]"
+end
+
+template "/etc/bind/named.conf.default-zones" do
+  source "named.conf.default-zones.erb"
+  variables(:forwarders => node[:dns][:forwarders])
+  mode 0644
+  owner "root"
+  case node[:platform]
+  when "ubuntu","debian" then group "bind"
+  when "centos","redhat" then group "named"
+  end
+  notifies :restart, "service[bind9]"
+end
+
 template "/etc/bind/named.conf.options" do
   source "named.conf.options.erb"
   variables(:forwarders => node[:dns][:forwarders])
@@ -97,7 +121,6 @@ bash "build-domain-file" do
     rm -f boot.cacheonly conf.cacheonly db.127.0.0 named.boot dns.hosts
     sed -i 's/"db/"\\/etc\\/bind\\/db/' named.conf.local
     grep zone named.conf.local | grep -v "zone \\".\\"" | grep -v "0.0.127" > named.conf.new
-    echo 'include "/etc/bind/named.conf.options";' >> named.conf.new
     mv named.conf.new named.conf.local
     cp * /etc/bind
 

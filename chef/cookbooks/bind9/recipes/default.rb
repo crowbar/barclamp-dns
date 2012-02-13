@@ -134,27 +134,29 @@ EOH
   notifies :restart, resources(:service => "bind9"), :immediately
 end
 
-#
-# This relies on the network barclamp networks - GREG: Not sure I like this!
-#
-storage_network = data_bag_item('crowbar', 'storage_network')
-admin_network = data_bag_item('crowbar', 'admin_network')
-bmc_network = data_bag_item('crowbar', 'bmc_network')
+# Get the config environment filter
+env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
+# Get the list of nodes
+nodes = search(:node, "#{env_filter}")
+nodes.each do |n|
+  aaalias = n["crowbar"]["display"]["alias"] rescue nil
+  aaalias = nil if aaalias == ""
 
-[ admin_network, bmc_network, storage_network ].each do |network|
-  network_name = network[:id].gsub("_network","")
-  base_name = ""
-  network[:allocated].each do |ip,h|
-    base_name = "#{h[:machine]} " if network_name == "admin"
-    hostname_str = "#{base_name}#{network_name}.#{h[:machine]}"
-    bind9_host ip do
+  Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
+    next unless network.address
+    base_name = "#{n[:fqdn].split(".")[0]} #{n[:fqdn]} " if network.name == "admin"
+    hostname_str = "#{base_name}#{network.name}.#{n[:fqdn]}"
+    hostname_str = "#{hostname_str} #{aaalias} #{aaalias}.#{n[:domain]}" if network.name == "admin" and aaalias
+    hostname_str = "#{hostname_str} #{network.name}.#{aaalias}.#{n[:domain]}" if aaalias
+    bind9_host network.address do
       hostname hostname_str
       action :add
     end
-  end
-  bind9_net network[:network][:subnet] do
-    netmask network[:network][:netmask]
-    action :add
+
+    bind9_net network.subnet do
+      netmask network.netmask
+      action :add
+    end
   end
 end
 

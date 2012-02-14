@@ -32,40 +32,19 @@ end
 
 directory "/etc/bind"
 
-template "/etc/bind/named.conf" do
-  source "named.conf.erb"
-  variables(:forwarders => node[:dns][:forwarders])
-  mode 0644
-  owner "root"
-  case node[:platform]
-  when "ubuntu","debian" then group "bind"
-  when "centos","redhat" then group "named"
+files=%w{named.conf db.0 db.255 named.conf.default-zones named.conf.options db.127 db.local}
+files.each do |file|
+  template "/etc/bind/#{file}" do
+    source "#{file}.erb"
+    variables(:forwarders => node[:dns][:forwarders])
+    mode 0644
+    owner "root"
+    case node[:platform]
+    when "ubuntu","debian" then group "bind"
+    when "centos","redhat" then group "named"
+    end
+    notifies :restart, "service[bind9]"
   end
-  notifies :restart, "service[bind9]"
-end
-
-template "/etc/bind/named.conf.default-zones" do
-  source "named.conf.default-zones.erb"
-  variables(:forwarders => node[:dns][:forwarders])
-  mode 0644
-  owner "root"
-  case node[:platform]
-  when "ubuntu","debian" then group "bind"
-  when "centos","redhat" then group "named"
-  end
-  notifies :restart, "service[bind9]"
-end
-
-template "/etc/bind/named.conf.options" do
-  source "named.conf.options.erb"
-  variables(:forwarders => node[:dns][:forwarders])
-  mode 0644
-  owner "root"
-  case node[:platform]
-  when "ubuntu","debian" then group "bind"
-  when "centos","redhat" then group "named"
-  end
-  notifies :restart, "service[bind9]"
 end
 
 case node[:platform]
@@ -74,7 +53,7 @@ when "redhat","centos"
     source "redhat-sysconfig-named.erb"
     mode 0644
     owner "root"
-    variables :options => { "OPTIONS" => "-c /etc/bind/named.conf.local" }
+    variables :options => { "OPTIONS" => "-c /etc/bind/named.conf" }
   end
 end
 

@@ -32,16 +32,19 @@ end
 
 directory "/etc/bind"
 
-template "/etc/bind/named.conf.options" do
-  source "named.conf.options.erb"
-  variables(:forwarders => node[:dns][:forwarders])
-  mode 0644
-  owner "root"
-  case node[:platform]
-  when "ubuntu","debian" then group "bind"
-  when "centos","redhat" then group "named"
+files=%w{named.conf db.0 db.255 named.conf.default-zones named.conf.options db.127 db.local}
+files.each do |file|
+  template "/etc/bind/#{file}" do
+    source "#{file}.erb"
+    variables(:forwarders => node[:dns][:forwarders])
+    mode 0644
+    owner "root"
+    case node[:platform]
+    when "ubuntu","debian" then group "bind"
+    when "centos","redhat" then group "named"
+    end
+    notifies :restart, "service[bind9]"
   end
-  notifies :restart, "service[bind9]"
 end
 
 case node[:platform]
@@ -50,7 +53,7 @@ when "redhat","centos"
     source "redhat-sysconfig-named.erb"
     mode 0644
     owner "root"
-    variables :options => { "OPTIONS" => "-c /etc/bind/named.conf.local" }
+    variables :options => { "OPTIONS" => "-c /etc/bind/named.conf" }
   end
 end
 
@@ -97,7 +100,6 @@ bash "build-domain-file" do
     rm -f boot.cacheonly conf.cacheonly db.127.0.0 named.boot dns.hosts
     sed -i 's/"db/"\\/etc\\/bind\\/db/' named.conf.local
     grep zone named.conf.local | grep -v "zone \\".\\"" | grep -v "0.0.127" > named.conf.new
-    echo 'include "/etc/bind/named.conf.options";' >> named.conf.new
     mv named.conf.new named.conf.local
     cp * /etc/bind
 
@@ -111,27 +113,30 @@ EOH
   notifies :restart, resources(:service => "bind9"), :immediately
 end
 
-#
-# This relies on the network barclamp networks - GREG: Not sure I like this!
-#
-storage_network = data_bag_item('crowbar', 'storage_network')
-admin_network = data_bag_item('crowbar', 'admin_network')
-bmc_network = data_bag_item('crowbar', 'bmc_network')
+# Get the config environment filter
+env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
+# Get the list of nodes
+nodes = search(:node, "#{env_filter}")
+nodes.each do |n|
+  aaalias = n["crowbar"]["display"]["alias"] rescue nil
+  aaalias = nil if aaalias == ""
 
-[ admin_network, bmc_network, storage_network ].each do |network|
-  network_name = network[:id].gsub("_network","")
-  base_name = ""
-  network[:allocated].each do |ip,h|
-    base_name = "#{h[:machine]} " if network_name == "admin"
-    hostname_str = "#{base_name}#{network_name}.#{h[:machine]}"
-    bind9_host ip do
+  Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
+    next unless network.address
+    nname = network.name.gsub("_", "-")
+    base_name = "#{n[:fqdn].split(".")[0]} #{n[:fqdn]} " if network.name == "admin"
+    hostname_str = "#{base_name}#{nname}.#{n[:fqdn]}"
+    hostname_str = "#{hostname_str} #{aaalias} #{aaalias}.#{n[:domain]}" if network.name == "admin" and aaalias
+    hostname_str = "#{hostname_str} #{nname}.#{aaalias}.#{n[:domain]}" if aaalias
+    bind9_host network.address do
       hostname hostname_str
       action :add
     end
-  end
-  bind9_net network[:network][:subnet] do
-    netmask network[:network][:netmask]
-    action :add
+
+    bind9_net network.subnet do
+      netmask network.netmask
+      action :add
+    end
   end
 end
 

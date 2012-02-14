@@ -123,10 +123,11 @@ nodes.each do |n|
 
   Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
     next unless network.address
+    nname = network.name.gsub("_", "-")
     base_name = "#{n[:fqdn].split(".")[0]} #{n[:fqdn]} " if network.name == "admin"
-    hostname_str = "#{base_name}#{network.name}.#{n[:fqdn]}"
+    hostname_str = "#{base_name}#{nname}.#{n[:fqdn]}"
     hostname_str = "#{hostname_str} #{aaalias} #{aaalias}.#{n[:domain]}" if network.name == "admin" and aaalias
-    hostname_str = "#{hostname_str} #{network.name}.#{aaalias}.#{n[:domain]}" if aaalias
+    hostname_str = "#{hostname_str} #{nname}.#{aaalias}.#{n[:domain]}" if aaalias
     bind9_host network.address do
       hostname hostname_str
       action :add

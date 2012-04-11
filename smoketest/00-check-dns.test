@@ -34,13 +34,6 @@ fi
 dns_client_nodes="$(knife_node_find  "roles:dns-client" IP )"
 
 for node in $dns_client_nodes; do
-    if run_on "$node"  grep "^nameserver\ $dns_server_ip$" /etc/resolv.conf &>/dev/null; then
-        echo "$(date '+%F %T %z'): DNS is pointed to the correct DNS server on node $node."
-    else
-        echo "$(date '+%F %T %z'): DNS is NOT pointed to the correct DNS server on node $node."
-        exit 1
-    fi
-
     if run_on "$node" nslookup $dns_server_ip | grep $dns_server_fqdn &>/dev/null; then
         echo "$(date '+%F %T %z'): nslookup is functioning correctly on $node."
     else

@@ -51,7 +51,7 @@ def make_zone(zone)
   # copy over SOA records that we have not overridden
   populate_soa_defaults zone
   zonefile_entries=Array.new
-  Chef::Log.info "Processing zone: #{zone.inspect}"
+  Chef::Log.debug "Processing zone: #{zone.inspect}"
   # Arrange for the forward lookup zone to be created.
   template "/etc/bind/db.#{zone[:domain]}" do
     source "db.erb"
@@ -80,8 +80,12 @@ def make_zone(zone)
       rev_zone[:nameservers]=["#{zone[:nameservers].first}"]
       rev_zone[:hosts] ||= Mash.new
       rev_zone[:hosts]["#{rev_domain}."] = Mash.new
-      rev_zone[:hosts]["#{rev_domain}."][:pointer]="#{hostname}.#{zone[:domain]}."
-      Chef::Log.info "Processing zone: #{rev_zone.inspect}"
+      rev_zone[:hosts]["#{rev_domain}."][:pointer]= if hostname == "@"
+                                                      "#{zone[:domain]}."
+                                                    else
+                                                      "#{hostname}.#{zone[:domain]}."
+                                                    end
+      Chef::Log.debug "Processing zone: #{rev_zone.inspect}"
       template "/etc/bind/db.#{rev_domain}" do
         source "db.erb"
         mode 0644
@@ -92,7 +96,7 @@ def make_zone(zone)
       zonefile_entries << rev_domain
     end
   end
-  Chef::Log.info "Creating zone file for zones: #{zonefile_entries.inspect}"
+  Chef::Log.debug "Creating zone file for zones: #{zonefile_entries.inspect}"
   template "/etc/bind/zone.#{zone[:domain]}" do
     source "zone.erb"
     mode 0644
@@ -234,4 +238,3 @@ template "/etc/bind/named.conf" do
 end
 
 node[:dns][:zones]=zones
-

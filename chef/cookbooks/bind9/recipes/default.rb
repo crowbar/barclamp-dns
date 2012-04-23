@@ -14,6 +14,7 @@
 #
 
 include_recipe "utils"
+require 'ipaddr'
 
 package "bind9" do
   case node[:platform]
@@ -32,20 +33,129 @@ end
 
 directory "/etc/bind"
 
-files=%w{named.conf db.0 db.255 named.conf.default-zones named.conf.options db.127 db.local}
-files.each do |file|
-  template "/etc/bind/#{file}" do
-    source "#{file}.erb"
-    variables(:forwarders => node[:dns][:forwarders])
+node[:dns][:zone_files]=Array.new
+
+def populate_soa_defaults(zone)
+  [ :admin,
+    :ttl,
+    :serial,
+    :slave_refresh,
+    :slave_retry,
+    :slave_expire,
+    :negative_cache ].each do |k|
+    zone[k] ||= node[:dns][k]
+  end
+  zone
+end
+def make_zone(zone)
+  # copy over SOA records that we have not overridden
+  populate_soa_defaults zone
+  zonefile_entries=Array.new
+  Chef::Log.info "Processing zone: #{zone.inspect}"
+  # Arrange for the forward lookup zone to be created.
+  template "/etc/bind/db.#{zone[:domain]}" do
+    source "db.erb"
     mode 0644
     owner "root"
     case node[:platform]
     when "ubuntu","debian" then group "bind"
     when "centos","redhat" then group "named"
     end
-    notifies :restart, "service[bind9]"
+    notifies :reload, "service[bind9]"
+    variables(:zone => zone)
+  end
+  zonefile_entries << zone[:domain]
+
+  # Arrange for reverse lookup zones to be created.
+  # Since there is no elegant method for doing this that takes into account
+  # CIDR or IPv6, do it the excessively ugly way and create one zone per IP.
+  zone[:hosts].keys.sort.each do |hostname|
+    host=zone[:hosts][hostname]
+    [:ip4addr, :ip6addr].each do |addr|
+      next unless host[addr]
+      rev_zone=Mash.new
+      populate_soa_defaults rev_zone
+      rev_domain=IPAddr.new(host[addr]).reverse
+      rev_zone[:domain]=rev_domain
+      rev_zone[:nameservers]=["#{zone[:nameservers].first}"]
+      rev_zone[:hosts] ||= Mash.new
+      rev_zone[:hosts]["#{rev_domain}."] = Mash.new
+      rev_zone[:hosts]["#{rev_domain}."][:pointer]="#{hostname}.#{zone[:domain]}."
+      Chef::Log.info "Processing zone: #{rev_zone.inspect}"
+      template "/etc/bind/db.#{rev_domain}" do
+        source "db.erb"
+        mode 0644
+        owner "root"
+        notifies :reload, "service[bind9]"
+        variables(:zone => rev_zone)
+      end
+      zonefile_entries << rev_domain
+    end
+  end
+  Chef::Log.info "Creating zone file for zones: #{zonefile_entries.inspect}"
+  template "/etc/bind/zone.#{zone[:domain]}" do
+    source "zone.erb"
+    mode 0644
+    owner "root"
+    case node[:platform]
+    when "ubuntu","debian" then group "bind"
+    when "centos","redhat" then group "named"
+    end
+    notifies :reload, "service[bind9]"
+    variables(:zones => zonefile_entries)
+  end
+  node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
+end
+
+# Create our basic zone infrastructure.
+node[:dns][:domain] ||= node[:fqdn].split('.')[1..-1].join(".")
+node[:dns][:admin] ||= "support.#{node[:fqdn]}."
+node[:dns][:ttl] ||= "1h"
+node[:dns][:serial] ||= 0
+node[:dns][:serial] += 1
+node[:dns][:slave_refresh] ||= "1d"
+node[:dns][:slave_retry] ||= "2h"
+node[:dns][:slave_expire] ||= "4w"
+node[:dns][:negative_cache] ||= "300"
+node[:dns][:zones] ||= Mash.new
+zones = Mash.new
+localdomain = Mash.new
+localdomain[:nameservers]=["#{node[:fqdn]}."]
+localdomain[:domain]="localhost"
+localdomain[:hosts] ||= Mash.new
+localdomain[:hosts]["@"] ||= Mash.new
+localdomain[:hosts]["@"][:ip4addr]="127.0.0.1"
+localdomain[:hosts]["@"][:ip6addr]="::1"
+zones["localhost"] = localdomain
+
+cluster_zone=Mash.new
+cluster_zone[:domain] ||= node[:dns][:domain]
+cluster_zone[:hosts] ||= Mash.new
+cluster_zone[:nameservers] ||= ["#{node[:fqdn]}."]
+populate_soa_defaults(cluster_zone)
+# Get the config environment filter
+env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
+# Get the list of nodes
+nodes = search(:node, "#{env_filter}")
+nodes.each do |n|
+  cname = n["crowbar"]["display"]["alias"] rescue ""
+  Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
+    next unless network.address
+    net_name = network.name.gsub('_','-')
+    base_name = n[:fqdn].chomp(".#{node[:dns][:domain]}")
+    base_name = "#{net_name}.#{base_name}" unless network.name == "admin"
+    cluster_zone[:hosts][base_name] ||= Mash.new
+    cluster_zone[:hosts][base_name][:ip4addr]=network.address
+    unless cname.empty?
+      if network.name == "admin"
+        cluster_zone[:hosts][base_name][:alias]=cname
+      else
+        cluster_zone[:hosts][base_name][:alias]="#{net_name}.#{cname}"
+      end
+    end
   end
 end
+zones[node[:dns][:domain]]=cluster_zone
 
 case node[:platform]
 when "redhat","centos"
@@ -68,82 +178,60 @@ service "bind9" do
   action :enable
 end
 
-file "/etc/bind/hosts" do
-  owner "root"
-  group "root"
-  mode 0644
-  content ""
-  action :create
-  not_if do File.exists?("/etc/bind/hosts") end
-end
-
-file "/etc/bind/netargs" do
-  owner "root"
-  group "root"
-  mode 0644
-  content ""
-  action :create
-  not_if do File.exists?("/etc/bind/netargs") end
-end
-
-bash "build-domain-file" do
-  code <<-EOH
-    mkdir /tmp/tmp.$$
-    cd /tmp/tmp.$$
-
-    NET_ARGS=`cat /etc/bind/netargs | while read line
-    do
-      echo -n "$line "
-    done`
-
-    /opt/dell/bin/h2n -d #{node[:dns][:domain]} -u #{node[:dns][:contact]} $NET_ARGS -H /etc/bind/hosts -h localhost +c named.conf.local
-    rm -f boot.cacheonly conf.cacheonly db.127.0.0 named.boot dns.hosts
-    sed -i 's/"db/"\\/etc\\/bind\\/db/' named.conf.local
-    grep zone named.conf.local | grep -v "zone \\".\\"" | grep -v "0.0.127" > named.conf.new
-    mv named.conf.new named.conf.local
-    cp * /etc/bind
-
-    touch -r /etc/motd /etc/bind/hosts
-    touch -r /etc/motd /etc/bind/netargs
-    touch -r /etc/motd /etc/bind/named.conf.local
-
-    rm -rf /tmp/tmp.$$
-EOH
-  only_if "test /etc/bind/netargs -nt /etc/bind/named.conf.local || test /etc/bind/hosts -nt /etc/bind/named.conf.local"
-  notifies :restart, resources(:service => "bind9"), :immediately
-end
-
-# Get the config environment filter
-env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
-# Get the list of nodes
-nodes = search(:node, "#{env_filter}")
-nodes.each do |n|
-  aaalias = n["crowbar"]["display"]["alias"] rescue nil
-  aaalias = nil if aaalias == ""
-
-  Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
-    next unless network.address
-    nname = network.name.gsub("_", "-")
-    base_name = "#{n[:fqdn].split(".")[0]} #{n[:fqdn]} " if network.name == "admin"
-    hostname_str = "#{base_name}#{nname}.#{n[:fqdn]}"
-    hostname_str = "#{hostname_str} #{aaalias} #{aaalias}.#{n[:domain]}" if network.name == "admin" and aaalias
-    hostname_str = "#{hostname_str} #{nname}.#{aaalias}.#{n[:domain]}" if aaalias
-    bind9_host network.address do
-      hostname hostname_str
-      action :add
+# Load up our default zones.  These never change.
+files=%w{db.0 db.255 named.conf.default-zones}
+files.each do |file|
+  template "/etc/bind/#{file}" do
+    source "#{file}.erb"
+    case node[:platform]
+    when "ubuntu","debian" then group "bind"
+    when "centos","redhat" then group "named"
     end
-
-    bind9_net network.subnet do
-      netmask network.netmask
-      action :add
-    end
+    mode 0644
+    owner "root"
+    notifies :reload, "service[bind9]"
   end
 end
 
-node[:dns][:static].each do |name,ip|
-  bind9_host ip do
-    hostname name
-    action :add
-  end
+# If we don't have a local named.conf.local, create one.
+# We keep this around to let local users add stuff to
+# DNS that Crowbar will not manage.
+
+bash "/etc/bind/named.conf.local" do
+  code "touch /etc/bind/named.conf.local"
+  not_if { ::File.exists? "/etc/bind/named.conf.local" }
 end
+
+# Write out the zone databases that Crowbar will be responsible for.
+zones.keys.sort.each do |zone|
+  make_zone zones[zone]
+end
+
+# Update named.conf.crowbar to include the new zones.
+template "/etc/bind/named.conf.crowbar" do
+  source "named.conf.crowbar.erb"
+  mode 0644
+  owner "root"
+  case node[:platform]
+  when "ubuntu","debian" then group "bind"
+  when "centos","redhat" then group "named"
+  end
+  variables(:zonefiles => node[:dns][:zone_files])
+  notifies :reload, "service[bind9]"
+end
+
+# Rewrite our default configuration file
+template "/etc/bind/named.conf" do
+  source "named.conf.erb"
+  mode 0644
+  owner "root"
+  case node[:platform]
+  when "ubuntu","debian" then group "bind"
+  when "centos","redhat" then group "named"
+  end
+  variables(:forwarders => node[:dns][:forwarders])
+  notifies :reload, "service[bind9]"
+end
+
+node[:dns][:zones]=zones
 

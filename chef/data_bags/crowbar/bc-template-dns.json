@@ -13,12 +13,12 @@
     "dns": {
       "crowbar-revision": 0,
       "element_states": {
-        "dns-server": [ "readying", "ready", "applying" ],
-        "dns-client": [ "readying", "ready", "applying" ]
+        "dns-server": [ "discovered", "readying", "ready", "applying" ],
+        "dns-client": [ "all" ]
       },
       "elements": {},
       "element_order": [
-        [ "dns-server" ], 
+        [ "dns-server" ],
         [ "dns-client" ]
       ],
       "config": {

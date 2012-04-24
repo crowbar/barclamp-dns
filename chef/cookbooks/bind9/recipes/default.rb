@@ -234,7 +234,7 @@ template "/etc/bind/named.conf" do
   when "centos","redhat" then group "named"
   end
   variables(:forwarders => node[:dns][:forwarders])
-  notifies :reload, "service[bind9]"
+  notifies :restart, "service[bind9]", :immediately
 end
 
 node[:dns][:zones]=zones

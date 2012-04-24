@@ -238,3 +238,4 @@ template "/etc/bind/named.conf" do
 end
 
 node[:dns][:zones]=zones
+include_recipe "resolver"

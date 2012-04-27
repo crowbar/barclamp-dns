@@ -142,21 +142,20 @@ env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
 # Get the list of nodes
 nodes = search(:node, "#{env_filter}")
 nodes.each do |n|
-  cname = n["crowbar"]["display"]["alias"] rescue ""
+  cname = n["crowbar"]["display"]["alias"] rescue nil
+  cname = nil unless cname && ! cname.empty?
   Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
     next unless network.address
-    net_name = network.name.gsub('_','-')
     base_name = n[:fqdn].chomp(".#{node[:dns][:domain]}")
-    base_name = "#{net_name}.#{base_name}" unless network.name == "admin"
+    alias_name = cname
+    unless network.name == "admin"
+      net_name = network.name.gsub('_','-')
+      base_name = "#{net_name}.#{base_name}"
+      alias_name = "#{net_name}.#{alias_name}" if alias_name
+    end
     cluster_zone[:hosts][base_name] ||= Mash.new
     cluster_zone[:hosts][base_name][:ip4addr]=network.address
-    unless cname.empty?
-      if network.name == "admin"
-        cluster_zone[:hosts][base_name][:alias]=cname
-      else
-        cluster_zone[:hosts][base_name][:alias]="#{net_name}.#{cname}"
-      end
-    end
+    cluster_zone[:hosts][base_name][:alias]=alias_name if alias_name
   end
 end
 zones[node[:dns][:domain]]=cluster_zone

@@ -32,7 +32,11 @@ $TTL <%= @zone[:ttl] %>
 <% @zone[:hosts].keys.sort.each do |host|
    record=@zone[:hosts][host]
    record.keys.sort.each do |k|
-   next unless zone_map[k] -%>
+   next unless zone_map[k]
+   if k == "alias" -%>
+<%= record[k] -%> IN <%= zone_map[k] -%> <%= host %>
+<% else -%>
 <%= host -%> IN <%= zone_map[k] -%> <%= record[k] %>
+<% end -%>
 <% end -%>
 <% end -%>

@@ -147,7 +147,7 @@ nodes.each do |n|
   Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
     next unless network.address
     base_name = n[:fqdn].chomp(".#{node[:dns][:domain]}")
-    alias_name = cname
+    alias_name = cname unless base_name == cname
     unless network.name == "admin"
       net_name = network.name.gsub('_','-')
       base_name = "#{net_name}.#{base_name}"

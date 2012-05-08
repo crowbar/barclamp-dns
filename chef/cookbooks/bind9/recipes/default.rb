@@ -142,6 +142,7 @@ env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
 # Get the list of nodes
 nodes = search(:node, "#{env_filter}")
 nodes.each do |n|
+  n = Node.load(n.name)
   cname = n["crowbar"]["display"]["alias"] rescue nil
   cname = nil unless cname && ! cname.empty?
   Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|

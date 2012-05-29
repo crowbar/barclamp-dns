@@ -23,7 +23,7 @@ nodes = search(:node, "roles:dns-server#{env_filter}")
 
 dns_list = []
 if !nodes.nil? and !nodes.empty?
-  dns_list = nodes.map { |x| Chef::Recipe::Barclamp::Inventory.get_network_by_type(x, "admin").address }
+  dns_list = nodes.map { |x| x.address.addr }
 end
 dns_list << node[:dns][:nameservers]
 

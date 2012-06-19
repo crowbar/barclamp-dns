@@ -138,7 +138,8 @@ cluster_zone[:hosts] ||= Mash.new
 cluster_zone[:nameservers] ||= ["#{node[:fqdn]}."]
 populate_soa_defaults(cluster_zone)
 # Get the config environment filter
-env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
+#env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
+env_filter = "*:*" # Get all nodes for now.  This is a hack around a timing issue in ganglia.
 # Get the list of nodes
 nodes = search(:node, "#{env_filter}")
 nodes.each do |n|

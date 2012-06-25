@@ -22,9 +22,9 @@ env_filter = " AND dns_config_environment:#{node[:dns][:config][:environment]}"
 nodes = search(:node, "roles:dns-server#{env_filter}")
 
 dns_list = []
-if !nodes.nil? and !nodes.empty?
-  dns_list = nodes.map { |x| Chef::Recipe::Barclamp::Inventory.get_network_by_type(x, "admin").address }
-elsif !node["crowbar"].nil? and node["crowbar"]["admin_node"] and !node[:dns][:forwarders].nil?
+if nodes and !nodes.empty?
+  dns_list = nodes.map { |x| x.address.addr }
+elsif node["crowbar"] and node["crowbar"]["admin_node"] and node[:dns][:forwarders]
   dns_list << node[:dns][:forwarders]
 end
 

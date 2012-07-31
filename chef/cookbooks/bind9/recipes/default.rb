@@ -21,14 +21,14 @@ package "bind9" do
   when "centos","redhat", "suse"
     package_name "bind"
   end
-  action :install
+  action :upgrade
 end
 package "bind9utils" do
   case node[:platform]
   when "centos","redhat", "suse"
     package_name "bind-utils"
   end
-  action :install
+  action :upgrade
 end
 
 directory "/etc/bind"

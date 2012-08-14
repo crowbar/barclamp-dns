@@ -1,4 +1,4 @@
-# Copyright 2011, Dell 
+# Copyright 2012, Dell 
 # 
 # Licensed under the Apache License, Version 2.0 (the "License"); 
 # you may not use this file except in compliance with the License. 
@@ -15,18 +15,6 @@
 
 class DnsService < ServiceObject
 
-  def initialize(thelogger)
-    @bc_name = "dns"
-    @logger = thelogger
-  end
-
-  def create_proposal
-    @logger.debug("DNS create_proposal: entering")
-    base = super
-    @logger.debug("DNS create_proposal: exiting")
-    base
-  end
-
   def transition(inst, name, state)
     @logger.debug("DNS transition: entering for #{name} for #{state}")
 
@@ -35,27 +23,29 @@ class DnsService < ServiceObject
     #
     if state == "discovered"
       @logger.debug("DNS transition: handling for #{name} for #{state}: discovered")
-      db = ProposalObject.find_proposal "dns", inst
-      role = RoleObject.find_role_by_name "dns-config-#{inst}"
+      prop = @barclamp.get_proposal(inst)
+      role = @barclamp.get_role("dns-server")
+      
+      return [400, "DNS Proposal is not active"] unless prop.active?
 
-      if role.override_attributes["dns"]["elements"]["dns-server"].nil? or
-         role.override_attributes["dns"]["elements"]["dns-server"].empty?
+      pca = prop.active_config
+      unless pca.roles.include?(role)
         @logger.debug("DNS transition: adding #{name} to dns-server role")
-        result = add_role_to_instance_and_node("dns", inst, name, db, role, "dns-server")
+        result = add_role_to_instance_and_node(name, inst, "dns-server")
       end
 
       # Always add the dns client
       @logger.debug("DNS transition: adding #{name} to dns-client role")
-      result = add_role_to_instance_and_node("dns", inst, name, db, role, "dns-client")
+      result = add_role_to_instance_and_node(name, inst, "dns-client")
 
-      a= [200, NodeObject.find_node_by_name(name).to_hash ] if result
+      a = [200, ""] if result
       a = [400, "Failed to add role to node"] unless result
       @logger.debug("DNS transition: leaving for #{name} for #{state}: discovered")
       return a
     end
 
     @logger.debug("DNS transition: leaving for #{name} for #{state}")
-    [200, NodeObject.find_node_by_name(name).to_hash ]
+    [200, ""]
   end
 
 

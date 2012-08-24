@@ -27,7 +27,11 @@ if !nodes.nil? and !nodes.empty?
 end
 dns_list << node[:dns][:nameservers]
 
-template "/etc/resolv.conf" do
+link "/etc/resolv.conf" do
+  to "/run/resolvconf/resolv.conf"
+end
+
+template "/etc/resolvconf/resolv.conf.d/head" do
   source "resolv.conf.erb"
   owner "root"
   group "root"

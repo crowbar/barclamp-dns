@@ -14,8 +14,5 @@
 # 
 
 class DnsController < BarclampController
-  def initialize
-    @service_object = DnsService.new logger
-  end
 end
 

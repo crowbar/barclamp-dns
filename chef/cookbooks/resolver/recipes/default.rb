@@ -27,14 +27,33 @@ if !nodes.nil? and !nodes.empty?
 end
 dns_list << node[:dns][:nameservers]
 
-link "/etc/resolv.conf" do
-  to "/run/resolvconf/resolv.conf"
+
+case node.platform_family
+
+  # debian has a script doing stuff
+
+  when "debian"
+
+    link "/etc/resolv.conf" do
+      to "/run/resolvconf/resolv.conf"
+    end
+
+    template "/etc/resolvconf/resolv.conf.d/head" do
+      source "resolv.conf.erb"
+      owner "root"
+      group "root"
+      mode 0644
+      variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
+    end
+
+  when "rhel"
+
+    template "/etc/resolv.conf" do
+      source "resolv.conf.erb"
+      owner "root"
+      group "root"
+      mode 0644
+      variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
+    end
 end
 
-template "/etc/resolvconf/resolv.conf.d/head" do
-  source "resolv.conf.erb"
-  owner "root"
-  group "root"
-  mode 0644
-  variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
-end

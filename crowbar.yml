@@ -45,4 +45,5 @@ debs:
 rpms:
   pkgs:
     - bind
+    - bind-libs
     - bind-utils

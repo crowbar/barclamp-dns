@@ -15,6 +15,7 @@
 
 include_recipe "utils"
 require 'ipaddr'
+require 'digest/md5'
 
 package "bind9" do
   case node[:platform]
@@ -47,6 +48,27 @@ def populate_soa_defaults(zone)
   end
   zone
 end
+
+def nested_values(hash)
+  values = []
+  hash.values.each do |value|
+    if value.is_a?(Hash)
+      values << nested_values(value)
+    elsif value.is_a?(Numeric)
+      # pass
+      # We do not want to include the serial itself. See below.
+    else
+      values << value
+    end
+  end
+  values.flatten.map { |x| x.to_s }
+end
+
+def get_zone_digest(zone_hash)
+  Digest::MD5.hexdigest(nested_values(zone_hash).sort.join(":"))
+end
+
+
 def make_zone(zone)
   # copy over SOA records that we have not overridden
   populate_soa_defaults zone
@@ -108,6 +130,7 @@ def make_zone(zone)
     notifies :reload, "service[bind9]"
     variables(:zones => zonefile_entries)
   end
+
   node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
 end
 
@@ -116,12 +139,13 @@ node[:dns][:domain] ||= node[:fqdn].split('.')[1..-1].join(".")
 node[:dns][:admin] ||= "support.#{node[:fqdn]}."
 node[:dns][:ttl] ||= "1h"
 node[:dns][:serial] ||= 0
-node[:dns][:serial] += 1
+# node[:dns][:serial] += 1
 node[:dns][:slave_refresh] ||= "1d"
 node[:dns][:slave_retry] ||= "2h"
 node[:dns][:slave_expire] ||= "4w"
 node[:dns][:negative_cache] ||= "300"
 node[:dns][:zones] ||= Mash.new
+node[:dns][:zones_change_hash] ||= Mash.new
 zones = Mash.new
 localdomain = Mash.new
 localdomain[:nameservers]=["#{node[:fqdn]}."]
@@ -209,7 +233,28 @@ end
 
 # Write out the zone databases that Crowbar will be responsible for.
 zones.keys.sort.each do |zone|
-  make_zone zones[zone]
+  # This kind of work normally is done by Chef itself. However we have a hen/egg problem
+  # here: We only need to change the template if a significant value is changed and only
+  # then the serial should be changed (otherwise the serial change would trigger the
+  # template change).
+  #
+  # So we go ahead and keep a seperate hash of the significant zone values and only write
+  # the templates if this MD5 hash changes.
+  zones_hash = zones[zone]
+  current_zone_change_md5 = get_zone_digest(zones_hash)
+  last_zone_change_md5 = node[:dns][:zones_change_hash][zone]
+  Chef::Log.debug("Current md5 for #{zone}: #{current_zone_change_md5}")
+  Chef::Log.debug("Last md5 for #{zone}: #{last_zone_change_md5}")
+  if current_zone_change_md5 == last_zone_change_md5
+    Chef::Log.info("No zone info changed. Not updating zone: #{zone}")
+  else
+    # This is global, but since we use only one zone (+localhost) internally most if the time
+    # stays this way for now
+    node[:dns][:serial] += 1
+    node[:dns][:zones_change_hash][zone] = current_zone_change_md5
+    Chef::Log.info("Zone info changed. Updating zone: #{zone} (Serial #{node[:dns][:serial]})")
+  end
+  make_zone zones_hash
 end
 
 # Update named.conf.crowbar to include the new zones.

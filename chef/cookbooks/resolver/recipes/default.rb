@@ -35,5 +35,5 @@ template "/etc/resolv.conf" do
   owner "root"
   group "root"
   mode 0644
-  variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
+  variables(:nameservers => dns_list.flatten, :search => (node[:dns][:domain] rescue nil))
 end

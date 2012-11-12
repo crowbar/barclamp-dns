@@ -241,7 +241,8 @@ template "/etc/bind/named.conf" do
   when "ubuntu","debian" then group "bind"
   when "centos","redhat","suse" then group "named"
   end
-  variables(:forwarders => node[:dns][:forwarders])
+  variables(:forwarders => node[:dns][:forwarders],
+            :allow_transfer => node[:dns][:allow_transfer])
   notifies :restart, "service[bind9]", :immediately
 end
 

@@ -24,6 +24,11 @@
               "required": false,
               "sequence": [ { "type": "str", "name": "IpAddress" } ]
             },
+            "allow_transfer": {
+              "type": "seq",
+              "required": false,
+              "sequence": [ { "type": "str" } ]
+            },
             "static": {
               "type": "map",
               "required": true,

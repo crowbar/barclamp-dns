@@ -21,6 +21,14 @@ options {
 	};
 <% end -%>
 
+<% if !@allow_transfer.nil? and !@allow_transfer.empty? -%>
+        allow-transfer {
+<%   @allow_transfer.each do |at| -%>
+          <%= at %>;
+<%   end -%>
+        };
+<% end -%>
+
 	auth-nxdomain no;    # conform to RFC1035
 	listen-on-v6 { any; };
 };

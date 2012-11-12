@@ -19,6 +19,11 @@
               "required": true,
               "sequence": [ { "type": "str", "name": "IpAddress" } ]
             },
+            "nameservers": {
+              "type": "seq",
+              "required": false,
+              "sequence": [ { "type": "str", "name": "IpAddress" } ]
+            },
             "static": {
               "type": "map",
               "required": true,

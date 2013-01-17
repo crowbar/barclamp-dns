@@ -23,7 +23,7 @@ barclamp:
     - crowbar
 
 crowbar:
-  layout: 2
+  layout: 1.9
   order: 30
   run_order: 30
   chef_order: 30

@@ -14,5 +14,19 @@
 # 
 
 class DnsController < BarclampController
+
+  # Override proposal_create to inject default domain and support
+  # attributes if we are creating one with a default proposal.
+
+  def proposal_create
+    dns = (params[:attributes][:dns] || Hash.new)
+    if dns[:domain].nil? || (dns[:domain] == "pod.your.cloud.org")
+      dns[:domain]=%x{hostname -d}.strip
+      dns[:contact]="support@#{dns[:domain]}"
+      params[:attributes] ||= Hash.new
+      params[:attributes][:dns]=dns
+    end
+    super
+  end
 end
 

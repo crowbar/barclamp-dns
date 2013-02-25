@@ -5,4 +5,5 @@ description       "Manages Bind9 for Crowbar"
 long_description  "Managed Bind9 for Crowbar"
 version           "2.0.0"
 depends           "utils"
+depends           "resolver"
 

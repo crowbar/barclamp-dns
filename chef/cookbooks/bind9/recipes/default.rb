@@ -33,7 +33,12 @@ end
 
 directory "/etc/bind"
 
-node[:dns][:zone_files]=Array.new
+node.set[:dns][:zone_files]=Array.new
+
+if (node[:dns][:domain] rescue String.new) == ""
+  node.set[:dns] ||= Mash.new
+  node.set[:dns][:domain] = node[:fqdn].split('.')[1..-1].join(".")
+end
 
 def populate_soa_defaults(zone)
   [ :admin,
@@ -112,16 +117,16 @@ def make_zone(zone)
 end
 
 # Create our basic zone infrastructure.
-node[:dns][:domain] ||= node[:fqdn].split('.')[1..-1].join(".")
-node[:dns][:admin] ||= "support.#{node[:fqdn]}."
-node[:dns][:ttl] ||= "1h"
-node[:dns][:serial] ||= 0
-node[:dns][:serial] += 1
-node[:dns][:slave_refresh] ||= "1d"
-node[:dns][:slave_retry] ||= "2h"
-node[:dns][:slave_expire] ||= "4w"
-node[:dns][:negative_cache] ||= "300"
-node[:dns][:zones] ||= Mash.new
+node.set[:dns][:domain] ||= node[:fqdn].split('.')[1..-1].join(".")
+node.set[:dns][:admin] ||= "support.#{node[:fqdn]}."
+node.set[:dns][:ttl] ||= "1h"
+node.set[:dns][:serial] ||= 0
+node.set[:dns][:serial] += 1
+node.set[:dns][:slave_refresh] ||= "1d"
+node.set[:dns][:slave_retry] ||= "2h"
+node.set[:dns][:slave_expire] ||= "4w"
+node.set[:dns][:negative_cache] ||= "300"
+node.set[:dns][:zones] ||= Mash.new
 zones = Mash.new
 localdomain = Mash.new
 localdomain[:nameservers]=["#{node[:fqdn]}."]
@@ -245,5 +250,5 @@ template "/etc/bind/named.conf" do
   notifies :restart, "service[bind9]", :immediately
 end
 
-node[:dns][:zones]=zones
+node.set[:dns][:zones]=zones
 include_recipe "resolver"

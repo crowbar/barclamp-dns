@@ -35,6 +35,11 @@ directory "/etc/bind"
 
 node[:dns][:zone_files]=Array.new
 
+if (node[:dns][:domain] rescue String.new) == ""
+  node[:dns] ||= Mash.new
+  node[:dns][:domain] = node[:fqdn].split('.')[1..-1].join(".")
+end
+
 def populate_soa_defaults(zone)
   [ :admin,
     :ttl,

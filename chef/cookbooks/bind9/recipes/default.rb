@@ -35,9 +35,9 @@ directory "/etc/bind"
 
 node.set[:dns][:zone_files]=Array.new
 
-if (node[:dns][:domain] rescue String.new) == ""
-  node.set[:dns] ||= Mash.new
+if node[:dns][:domain] == ""
   node.set[:dns][:domain] = node[:fqdn].split('.')[1..-1].join(".")
+  node.set[:dns][:admin] = node[:dns][:contact].tr('@','.')
 end
 
 def populate_soa_defaults(zone)
@@ -117,16 +117,7 @@ def make_zone(zone)
 end
 
 # Create our basic zone infrastructure.
-node.set[:dns][:domain] ||= node[:fqdn].split('.')[1..-1].join(".")
-node.set[:dns][:admin] ||= "support.#{node[:fqdn]}."
-node.set[:dns][:ttl] ||= "1h"
-node.set[:dns][:serial] ||= 0
-node.set[:dns][:serial] += 1
-node.set[:dns][:slave_refresh] ||= "1d"
-node.set[:dns][:slave_retry] ||= "2h"
-node.set[:dns][:slave_expire] ||= "4w"
-node.set[:dns][:negative_cache] ||= "300"
-node.set[:dns][:zones] ||= Mash.new
+node.set[:dns][:zones] = Mash.new unless node[:dns][:zones]
 zones = Mash.new
 localdomain = Mash.new
 localdomain[:nameservers]=["#{node[:fqdn]}."]

@@ -1,587 +1,0 @@
-Script started on Tue 05 Mar 2013 05:14:52 PM CST
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ xargs finnd -type f | grep -v test | xargs perl -pi -e 's|Copyright 2012|Copyright 2013|g'' [A[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ man xargs[K
-[K[A[C[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ [K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cfor i in  ** ; do
-> echo $i
-> done
-app
-barclamp_dns.gemspec
-config
-db
-Gemfile
-Gemfile.lock
-lib
-Rakefile
-script
-test
-typescript
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ ls
-[0m[01;34mapp[0m                   [01;34mconfig[0m  Gemfile       [01;34mlib[0m       [01;34mscript[0m  typescript
-barclamp_dns.gemspec  [01;34mdb[0m      Gemfile.lock  Rakefile  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ find
-.
-./config
-./config/locales
-./config/locales/en.yml
-./config/routes.rb
-./config/initializers
-./config/initializers/api.rb
-./lib
-./lib/barclamp_dns
-./lib/barclamp_dns/version.rb
-./lib/barclamp_dns/engine.rb
-./lib/barclamp_dns.rb
-./lib/tasks
-./lib/tasks/barclamp_dns_tasks.rake
-./typescript
-./.gitignore
-./Rakefile
-./db
-./db/migrate
-./db/migrate/20120801015023_barclamp_import_dns.rb
-./test
-./test/test_helper.rb
-./test/models
-./test/models/barclamp_dns
-./test/integration
-./test/integration/navigation_test.rb
-./test/dummy
-./test/dummy/config
-./test/dummy/config/environments
-./test/dummy/config/environments/production.rb
-./test/dummy/config/environments/development.rb
-./test/dummy/config/environments/test.rb
-./test/dummy/config/boot.rb
-./test/dummy/config/locales
-./test/dummy/config/locales/en.yml
-./test/dummy/config/application.rb
-./test/dummy/config/database.yml
-./test/dummy/config/environment.rb
-./test/dummy/config/routes.rb
-./test/dummy/config/initializers
-./test/dummy/config/initializers/backtrace_silencers.rb
-./test/dummy/config/initializers/wrap_parameters.rb
-./test/dummy/config/initializers/session_store.rb
-./test/dummy/config/initializers/inflections.rb
-./test/dummy/config/initializers/mime_types.rb
-./test/dummy/config/initializers/secret_token.rb
-./test/dummy/lib
-./test/dummy/lib/assets
-./test/dummy/lib/assets/.gitkeep
-./test/dummy/Rakefile
-./test/dummy/db
-./test/dummy/log
-./test/dummy/log/.gitkeep
-./test/dummy/config.ru
-./test/dummy/README.rdoc
-./test/dummy/public
-./test/dummy/public/422.html
-./test/dummy/public/favicon.ico
-./test/dummy/public/500.html
-./test/dummy/public/404.html
-./test/dummy/tmp
-./test/dummy/tmp/cache
-./test/dummy/tmp/cache/assets
-./test/dummy/script
-./test/dummy/script/rails
-./test/dummy/app
-./test/dummy/app/models
-./test/dummy/app/models/.gitkeep
-./test/dummy/app/helpers
-./test/dummy/app/helpers/application_helper.rb
-./test/dummy/app/assets
-./test/dummy/app/assets/javascripts
-./test/dummy/app/assets/javascripts/application.js
-./test/dummy/app/assets/stylesheets
-./test/dummy/app/assets/stylesheets/application.css
-./test/dummy/app/assets/images
-./test/dummy/app/mailers
-./test/dummy/app/mailers/.gitkeep
-./test/dummy/app/controllers
-./test/dummy/app/controllers/application_controller.rb
-./test/dummy/app/views
-./test/dummy/app/views/layouts
-./test/dummy/app/views/layouts/application.html.erb
-./test/barclamp_dns_test.rb
-./Gemfile.lock
-./barclamp_dns.gemspec
-./Gemfile
-./script
-./script/rails
-./app
-./app/models
-./app/models/barclamp_dns
-./app/models/barclamp_dns/barclamp.rb
-./app/models/barclamp_dns/dns_service.rb
-./app/helpers
-./app/helpers/barclamp_dns
-./app/helpers/barclamp_dns/application_helper.rb
-./app/assets
-./app/assets/javascripts
-./app/assets/javascripts/barclamp_dns
-./app/assets/javascripts/barclamp_dns/application.js
-./app/assets/stylesheets
-./app/assets/stylesheets/barclamp_dns
-./app/assets/stylesheets/barclamp_dns/application.css
-./app/assets/images
-./app/assets/images/barclamp_dns
-./app/assets/images/barclamp_dns/.gitkeep
-./app/controllers
-./app/controllers/barclamp_dns
-./app/controllers/barclamp_dns/barclamps_controller.rb
-./app/controllers/barclamp_dns/application_controller.rb
-./app/views
-./app/views/barclamp_dns
-./app/views/barclamp_dns/_edit_deployment.html.haml
-./app/views/layouts
-./app/views/layouts/barclamp_dns
-./app/views/layouts/barclamp_dns/application.html.erb
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ ls
-[0m[01;34mapp[0m                   [01;34mconfig[0m  Gemfile       [01;34mlib[0m       [01;34mscript[0m  typescript
-barclamp_dns.gemspec  [01;34mdb[0m      Gemfile.lock  Rakefile  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ lsfind[2Plsfor i in  ** ; do echo $i; done[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K/*; do echo $i; done
-app/assets
-app/controllers
-app/helpers
-app/models
-app/views
-config/initializers
-config/locales
-config/routes.rb
-db/migrate
-lib/barclamp_dns
-lib/barclamp_dns.rb
-lib/tasks
-script/rails
-test/barclamp_dns_test.rb
-test/dummy
-test/integration
-test/models
-test/test_helper.rb
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ ls **/*. rb
-config/routes.rb     test/barclamp_dns_test.rb
-lib/barclamp_dns.rb  test/test_helper.rb
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ ls **/*.rrb[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C/*.rb[K[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ [C[C[C
-[C
-config/routes.rb     test/barclamp_dns_test.rb
-lib/barclamp_dns.rb  test/test_helper.rb
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ cat .git ignore 
-.bundle/
-log/*.log
-pkg/
-test/dummy/db/*.sqlite3
-test/dummy/log/*.log
-test/dummy/tmp/
-test/dummy/.sass-cache
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dnswayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine/barclamp_dns$ cd ..
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_enginewayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine$ ls
-[0m[01;34mbarclamp_dns[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_enginewayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine$ c[K\r
-The program 'r' is currently not installed.  You can install it by typing:
-sudo apt-get install littler
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_enginewayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine$ r
-bash: popd: directory stack empty
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_enginewayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine$ r
-bash: popd: directory stack empty
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dns/crowbar_enginewayne@terminus:~/dev/crowbar/barclamps/dns/crowbar_engine$ cd ../../[K[K[K[K
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ cat .gitignore 
-*.lock
-.idea
-.rvmrc
-*~
-.#*
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls
-bc-template-dns.json    [0m[01;34mbin[0m   [01;34mcrowbar_engine[0m     crowbar.yml  README.txt
-bc-template-dns.schema  [01;34mchef[0m  [01;34mcrowbar_framework[0m  [01;34mdoc[0m          [01;34msmoketest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls
-bc-template-dns.json    [0m[01;34mbin[0m   [01;34mcrowbar_engine[0m     crowbar.yml  README.txt
-bc-template-dns.schema  [01;34mchef[0m  [01;34mcrowbar_framework[0m  [01;34mdoc[0m          [01;34msmoketest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls crowbar_engine/barclamp_dns/
-app/                  Gemfile               Rakefile
-barclamp_dns.gemspec  Gemfile.lock          script/
-config/               .gitignore            test/
-db/                   lib/                  typescript
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls crowbar_engine/barclamp_dns/[Kcd ../logging/
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ ls
-bc-template-logging.json    [0m[01;34mbin[0m   [01;34mcrowbar_engine[0m     crowbar.yml  README.txt
-bc-template-logging.schema  [01;34mchef[0m  [01;34mcrowbar_framework[0m  [01;34mdoc[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ ls crowbar_engine/cr[K[Kbarclamp_logginng/
-[0m[01;34mapp[0m  barclamp_logging.gemspec  [01;34mconfig[0m  [01;34mdb[0m  Gemfile  [01;34mlib[0m  Rakefile  [01;34mscript[0m  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ gem[K[K[Kgit status
-# On branch master
-# Your branch is ahead of 'crowbar/master' by 1 commit.
-#
-nothing to commit (working directory clean)
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ g gi[K[Kl[Kcrowbar_engine/barclamp_loggingg/
-~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging ~/dev/crowbar/barclamps/logging
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  ls
-[0m[01;34mapp[0m  barclamp_logging.gemspec  [01;34mconfig[0m  [01;34mdb[0m  Gemfile  [01;34mlib[0m  Rakefile  [01;34mscript[0m  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  mkdir [K[K[K[K[K[Kmk[K[Kcat >>foo
-hi
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  ls
-[0m[01;34mapp[0m                       [01;34mconfig[0m  foo      [01;34mlib[0m       [01;34mscript[0m
-barclamp_logging.gemspec  [01;34mdb[0m      Gemfile  Rakefile  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  c[Kr
-~/dev/crowbar/barclamps/logging
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ git status
-# On branch master
-# Your branch is ahead of 'crowbar/master' by 1 commit.
-#
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	crowbar_engine/barclamp_logging/foo
-nothing added to commit but untracked files present (use "git add" to track)
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ vim .l[Kgitignore 
-[?1049h[?1h=[1;44r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[44;1H".gitignore" 5L, 27C[>c[1;1H*.lock
-.idea
-.rvmrc
-*~
-.#*
-[1m[34m~                                                                               [7;1H~                                                                               [8;1H~                                                                               [9;1H~                                                                               [10;1H~                                                                               [11;1H~                                                                               [12;1H~                                                                               [13;1H~                                                                               [14;1H~                                                                               [15;1H~                                                                               [16;1H~                                                                               [17;1H~                                                                               [18;1H~                                                                               [19;1H~                                                                               [20;1H~                                                                               [21;1H~                                                                               [22;1H~                                                                               [23;1H~                                                                               [24;1H~                                                                               [25;1H~                                                                               [26;1H~                                                                               [27;1H~                                                                               [28;1H~                                                                               [29;1H~                                                                               [30;1H~                                                                               [31;1H~                                                                               [32;1H~                                                                               [33;1H~                                                                               [34;1H~                                                                               [35;1H~                                                                               [36;1H~                                                                               [37;1H~                                                                               [38;1H~                                                                               [39;1H~                                                                               [40;1H~                                                                               [41;1H~                                                                               [42;1H~                                                                               [43;1H~                                                                               [m[44;63H1,1[11CAll[1;1H[?12l[?25hP+q436f\P+q6b75\P+q6b64\P+q6b72\P+q6b6c\P+q2332\P+q2334\P+q2569\P+q2a37\P+q6b31\[?25l[44;1H[K[44;1H:[?12l[?25hq[?25l[?12l[?25h[?25l[44;1H[K[44;1H[?1l>[?12l[?25h[?1049l]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ g crowbar_engine/barclamp_loggingg/
-~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging ~/dev/crowbar/barclamps/logging
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  ls
-[0m[01;34mapp[0m                       [01;34mconfig[0m  foo      [01;34mlib[0m       [01;34mscript[0m
-barclamp_logging.gemspec  [01;34mdb[0m      Gemfile  Rakefile  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  mv foo foo.log[Kck
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  \[Kr
-~/dev/crowbar/barclamps/logging
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ git status
-# On branch master
-# Your branch is ahead of 'crowbar/master' by 1 commit.
-#
-nothing to commit (working directory clean)
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ ls
-bc-template-logging.json    [0m[01;34mbin[0m   [01;34mcrowbar_engine[0m     crowbar.yml  README.txt
-bc-template-logging.schema  [01;34mchef[0m  [01;34mcrowbar_framework[0m  [01;34mdoc[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ caxt .[K[K[K[Kt .gitignore 
-*.lock
-.idea
-.rvmrc
-*~
-.#*
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ git status
-# On branch master
-# Your branch is ahead of 'crowbar/master' by 1 commit.
-#
-nothing to commit (working directory clean)
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ g crowbar_engine/barclamp_loggingg/
-~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging ~/dev/crowbar/barclamps/logging
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  ls
-[0m[01;34mapp[0m                       [01;34mconfig[0m  foo.lock  [01;34mlib[0m       [01;34mscript[0m
-barclamp_logging.gemspec  [01;34mdb[0m      Gemfile   Rakefile  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  catd [K[K[K[K[Kmv foo.lock foo
-]0;wayne@terminus: ~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_loggingwayne@terminus:~/dev/crowbar/barclamps/logging/crowbar_engine/barclamp_logging$  r
-~/dev/crowbar/barclamps/logging
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ git status
-# On branch master
-# Your branch is ahead of 'crowbar/master' by 1 commit.
-#
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	crowbar_engine/barclamp_logging/foo
-nothing added to commit but untracked files present (use "git add" to track)
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ 
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ pwd
-/home/wayne/dev/crowbar/barclamps/logging
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ r
-bash: popd: directory stack empty
-]0;wayne@terminus: ~/dev/crowbar/barclamps/loggingwayne@terminus:~/dev/crowbar/barclamps/logging$ c[Kcd ../dns/
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ g crowbar_engine/barclamp_dns/config//routes.rb [A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ cg crowbar_engine/barclamp_dns/config[1@/[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [Cag crowbar_engine/barclamp_dns/confi[1@g[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[Cdg crowbar_engine/barclamp_dns/conf[1@i[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[Ctg crowbar_engine/barclamp_dns/con[1@f[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[C[Cg crowbar_engine/barclamp_dns/conf[1P[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[Cg crowbar_engine/barclamp_dns/confi[1P[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[Ctg crowbar_engine/barclamp_dns/conf[1@i[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[Crg crowbar_engine/barclamp_dns/con[1@f[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[C[Cg crowbar_engine/barclamp_dns/conf[1P[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[C crowbar_engine/barclamp_dns/confi[1P[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[C
-
-# Copyright 2013, Dell
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#  http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-BarclampDns::Engine.routes.draw do
-
-  # API routes
-  scope "#{BarclampDns::API_VERSION}" do
-    resources :barclamps do
-      collection do
-        get :catalog
-      end
-      member do
-      
-      end
-    end
-  end
-
-  # non-API routes
-  resources :barclamps do
-    collection do
-        
-    end
-    member do
-      
-    end
-  end
-
-
-# configure routes for these Dns barclamps controller actions...
-# (other controllers may also need routing configuration!)
-#proposal_create
-
-end
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls
-bc-template-dns.json    [0m[01;34mbin[0m   [01;34mcrowbar_engine[0m     crowbar.yml  README.txt
-bc-template-dns.schema  [01;34mchef[0m  [01;34mcrowbar_framework[0m  [01;34mdoc[0m          [01;34msmoketest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ g ../[K[K[K[K[Krm ./[K./.[Klogging/cre[Kowbar_engine/barclampp_logging/foo 
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls
-bc-template-dns.json    [0m[01;34mbin[0m   [01;34mcrowbar_engine[0m     crowbar.yml  README.txt
-bc-template-dns.schema  [01;34mchef[0m  [01;34mcrowbar_framework[0m  [01;34mdoc[0m          [01;34msmoketest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ git status
-# On branch master
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	crowbar_engine/
-nothing added to commit but untracked files present (use "git add" to track)
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls crowbar_engine/barclamp_dns/test/ 
-barclamp_dns_test.rb  integration/          test_helper.rb
-dummy/                models/               
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls crowbar_engine/barclamp_dns/test/ integration/navigation_test.rb [A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ cls crowbar_engine/barclamp_dns/test/[1@i[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [Cals crowbar_engine/barclamp_dns/test[1@/[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[Ctls crowbar_engine/barclamp_dns/tes[1@t[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[Cs crowbar_engine/barclamp_dns/test[1P[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[C crowbar_engine/barclamp_dns/test/[1P[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C[C
-[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
-require 'test_helper'
-
-class NavigationTest < ActionDispatch::IntegrationTest
-  fixtures :all
-
-  # test "the truth" do
-  #   assert true
-  # end
-end
-
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ cat crowbar_engine/barclamp_dns/test//integration/navigation_test.rb [K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K
-barclamp_dns_test.rb  integration/          test_helper.rb
-dummy/                models/               
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ cat crowbar_engine/barclamp_dns/test//models/barclamp_dns/[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ lcat crowbar_engine/barclamp_dns/test/models/barclamp_dns/[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [Cscat crowbar_engine/barclamp_dns/test/models/barclamp_dns/[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[Cat crowbar_engine/barclamp_dns/test[1P/models/barclamp_dns/[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[Ct crowbar_engine/barclamp_dns/test/[1Pmodels/barclamp_dns/[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C crowbar_engine/barclamp_dns/test/m[1Podels/barclamp_dns/[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [C[C
-
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls crowbar_engine/barclamp_dns/test/mmodels/barclamp_dns/[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C/ dummy/
-app/         config.ru    lib/         public/      README.rdoc  tmp/
-config/      db/          log/         Rakefile     script/      
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls crowbar_engine/barclamp_dns/test/ddummy/[K[K[K[K[K[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K/test/ un[K[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C/ un[K[K
-barclamp_dns_test.rb  integration/          test_helper.rb
-dummy/                models/               
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls crowbar_engine/barclamp_dns/test/ [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cr
-bash: popd: directory stack empty
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ cd ../chef/
-]0;wayne@terminus: ~/dev/crowbar/barclamps/chefwayne@terminus:~/dev/crowbar/barclamps/chef$ ls
-[0m[01;32mbc-template-chef.json[0m    [01;34mbin[0m   [01;34mcrowbar_engine[0m  [01;34mdoc[0m
-[01;32mbc-template-chef.schema[0m  [01;34mchef[0m  crowbar.yml     [01;34msetup[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/chefwayne@terminus:~/dev/crowbar/barclamps/chef$ g crowbar_engine/barclamp_chef/
-~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chef ~/dev/crowbar/barclamps/chef
-]0;wayne@terminus: ~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chefwayne@terminus:~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chef$ ls tes t
-[0m[01;34mfixtures[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chefwayne@terminus:~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chef$ ls tes t/fixtures/chef.pem [A]0;wayne@terminus: ~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chefwayne@terminus:~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chef$ [K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cls
-[0m[01;34mapp[0m  barclamp_chef.gemspec  [01;34mconfig[0m  [01;34mdb[0m  Gemfile  [01;34mlib[0m  [01;34mtest[0m  version.rb
-]0;wayne@terminus: ~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chefwayne@terminus:~/dev/crowbar/barclamps/chef/crowbar_engine/barclamp_chef$ r
-~/dev/crowbar/barclamps/chef
-]0;wayne@terminus: ~/dev/crowbar/barclamps/chefwayne@terminus:~/dev/crowbar/barclamps/chef$ cd ../crowbar/te[K[Kcrowbar_framework/testt/
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_framework/testwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework/test$ ls
-barclamp_network_test.rb  [0m[01;34mfixtures[0m                [01;34mperformance[0m     [01;34munit[0m
-[01;34mdata[0m                      network_test_helper.rb  test_helper.rb
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_framework/testwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework/test$ ls fixturees/.empty.yml [K[K[K[K[K[K[K[K[K[K[K[K[K[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K[K[K[Kls data/
-barclamp_node_data_test.json  [0m[01;34mfoo[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_framework/testwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework/test$ find [K[K[K[K[Kcd ..
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ ls
-[0m[01;34mapp[0m        crowbar.pill  [01;34mlib[0m          [01;34mpublic[0m    [01;34mscript[0m  [01;34mtmp[0m
-[01;34mconfig[0m     [01;34mdb[0m            [01;34mlog[0m          puma.cfg  [01;34mspec[0m    [01;32munits.sh[0m
-config.ru  Gemfile       NOTES.rspec  Rakefile  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ ls spec/
-models/         spec_helper.rb  
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ ls spec/models//
-crowbar_utils_spec.rb         proposal_queue_spec.old
-jig_spec.rb                   service_object_spec.old
-job_mgr_spec.rb               user_spec.rb
-proposal_queue_item_spec.old  
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ ls spec/models//[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K[K[K[K[K[K[K[K[Kls
-[0m[01;34mapp[0m        crowbar.pill  [01;34mlib[0m          [01;34mpublic[0m    [01;34mscript[0m  [01;34mtmp[0m
-[01;34mconfig[0m     [01;34mdb[0m            [01;34mlog[0m          puma.cfg  [01;34mspec[0m    [01;32munits.sh[0m
-config.ru  Gemfile       NOTES.rspec  Rakefile  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ ls spec/
-[0m[01;34mmodels[0m  spec_helper.rb
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ ls units.sh [1@cals units.sh  [A]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ [C[Cdls units.sh  [A]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ [C[C[Ctls units.sh [A]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ [C[C[C[Cs units.sh [K[A]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ [C[C[C[Cs units.sh  [K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1P
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cts units.sh  [A]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ [C[C[C[1P
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
-#!/bin/bash
-# Copyright 2012, Dell
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#  http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
-# run FROM the unit tests from the unit test directory 
-cd /tmp/crowbar-dev-test/opt/dell/crowbar_framework
-export RAILS_ENV=development
-~/crowbar/dev reload-unit-tests
-RAILS_ENV=development bundle exec rake test:units $1
-
-#bundle exec ruby -Ispec spec/models/jobmgr_spec.rb
-
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ ls
-[0m[01;34mapp[0m        crowbar.pill  [01;34mlib[0m          [01;34mpublic[0m    [01;34mscript[0m  [01;34mtmp[0m
-[01;34mconfig[0m     [01;34mdb[0m            [01;34mlog[0m          puma.cfg  [01;34mspec[0m    [01;32munits.sh[0m
-config.ru  Gemfile       NOTES.rspec  Rakefile  [01;34mtest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ ls config
-application.rb       database.yml    [0m[01;34minitializers[0m   preinitializer.rb
-boot.rb              environment.rb  [01;34mlocales[0m        routes.rb
-catalog.yml.example  [01;34menvironments[0m    navigation.rb
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ r
-bash: popd: directory stack empty
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ r
-bash: popd: directory stack empty
-]0;wayne@terminus: ~/dev/crowbar/barclamps/crowbar/crowbar_frameworkwayne@terminus:~/dev/crowbar/barclamps/crowbar/crowbar_framework$ cd
-]0;wayne@terminus: ~wayne@terminus:~$ g dev/crowbar
-~/dev/crowbar ~
-]0;wayne@terminus: ~/dev/crowbarwayne@terminus:~/dev/crowbar$ ls
-[0m[01;34mbarclamps[0m              [01;32minstall-prereqs[0m                 README.uefi
-[01;32mbuild_crowbar.sh[0m       [01;34mlicense[0m                         [01;34mredhat-5.6-extra[0m
-build-info             [01;32mlicense_finder.sh[0m               [01;34mredhat-5.7-extra[0m
-build_lib.sh           License.txt                     [01;34mredhat-6.2-extra[0m
-[01;32mbuild_omsahammer.sh[0m    [01;32mmake_pull_request[0m               [01;34mredhat-common[0m
-[01;32mbuild_sledgehammer.sh[0m  [01;34mopensuse-12.2-extra[0m             [01;34mreleases[0m
-[01;34mcentos-5.7-extra[0m       [01;32mpackage_barclamp.sh[0m             [01;32mrun-installer.sh[0m
-[01;34mcentos-6.2-extra[0m       [01;34mpackaging[0m                       sha1sums
-[01;36mcentos-common[0m          [01;32mparse_yml.rb[0m                    [01;34msledgehammer-common[0m
-[01;36mchange-image[0m           README.barclamp-packaging       [01;34msuse-common[0m
-crowbar.json           README.build                    [01;34mtest_framework[0m
-[01;32mdev[0m                    README.dev-and-code-review      [01;34mtesting[0m
-[01;34mdev-setup[0m              README.dev-and-workflow         test_lib.sh
-[01;34mdoc[0m                    README.heterogenous-os-support  [01;34mtravis-ci[0m
-dot-rvmrc              README.knife-config.md          [01;34mubuntu-10.10-extra[0m
-[01;36mextra[0m                  README.md                       [01;34mubuntu-11.04-extra[0m
-[01;32mfetch_all_gems.rb[0m      README.online-install           [01;34mubuntu-11.10-extra[0m
-Gemfile                README.package-updates          [01;34mubuntu-12.04-extra[0m
-[01;34minitrd[0m                 README.sledgehammer             [01;34mubuntu-common[0m
-[01;32minstall[0m                README.sledgehammer-hooks
-[01;32minstall-crowbar[0m        README.smoketest
-]0;wayne@terminus: ~/dev/crowbarwayne@terminus:~/dev/crowbar$ g barclamps/
-~/dev/crowbar/barclamps ~/dev/crowbar ~
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ ls
-[0m[01;34mApacheHadoop[0m     [01;34mdell_raid[0m  [01;34mkeystone[0m        [01;34mntp[0m          [01;34mswift[0m
-[01;34mbios[0m             [01;34mdeployer[0m   [01;34mkong[0m            [01;34mopenstack[0m    [01;34mtempest[0m
-[01;34mchef[0m             [01;34mdns[0m        [01;34mlogging[0m         [01;34moverview[0m     [01;34mtest[0m
-[01;34mcinder[0m           [01;34mganglia[0m    [01;34mmysql[0m           [01;34mpig[0m          [01;34mzookeeper[0m
-[01;34mclouderamanager[0m  [01;34mglance[0m     [01;34mnagios[0m          [01;34mprovisioner[0m
-[01;34mcrowbar[0m          [01;34mhadoop[0m     [01;34mnetwork[0m         [01;34mquantum[0m
-[01;34mdell_bios[0m        [01;34mhive[0m       [01;34mnova[0m            [01;34mraid[0m
-[01;34mdell_branding[0m    [01;34mipmi[0m       [01;34mnova_dashboard[0m  [01;34msqoop[0m
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ find [K[K[K[K[Kls crowbar/[K[K[K[K[K[K[K[Khadoop/
-README.empty-branch
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ cat nova[1@l[1@s[1P[1P[1P nova
-README.empty-branch
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ ls ntp/
-bc-template-ntp.json    [0m[01;34mbin[0m   [01;34mcrowbar_framework[0m  [01;34mdoc[0m         [01;34msmoketest[0m
-bc-template-ntp.schema  [01;34mchef[0m  crowbar.yml        README.txt
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ ls nagios/
-[0m[01;32mbc-template-nagios.json[0m    [01;34mbin[0m   [01;34mcrowbar_framework[0m  [01;34mdoc[0m
-[01;32mbc-template-nagios.schema[0m  [01;34mchef[0m  crowbar.yml        README.txt
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ ls im[Kpmi
-[0m[01;32mbc-template-ipmi.json[0m    [01;34mbin[0m   [01;34mcrowbar_framework[0m  [01;34mdoc[0m
-[01;32mbc-template-ipmi.schema[0m  [01;34mchef[0m  crowbar.yml        README.txt
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ ls dns
-bc-template-dns.json    [0m[01;34mbin[0m   [01;34mcrowbar_engine[0m     crowbar.yml  README.txt
-bc-template-dns.schema  [01;34mchef[0m  [01;34mcrowbar_framework[0m  [01;34mdoc[0m          [01;34msmoketest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ ls ntp
-bc-template-ntp.json    [0m[01;34mbin[0m   [01;34mcrowbar_framework[0m  [01;34mdoc[0m         [01;34msmoketest[0m
-bc-template-ntp.schema  [01;34mchef[0m  crowbar.yml        README.txt
-]0;wayne@terminus: ~/dev/crowbar/barclampswayne@terminus:~/dev/crowbar/barclamps$ cd dns
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ ls
-bc-template-dns.json    [0m[01;34mbin[0m   [01;34mcrowbar_engine[0m     crowbar.yml  README.txt
-bc-template-dns.schema  [01;34mchef[0m  [01;34mcrowbar_framework[0m  [01;34mdoc[0m          [01;34msmoketest[0m
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ git -a[K[K[K[K[K[Kgit add crowbar_engine/[K
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ git status
-# On branch master
-# Changes to be committed:
-#   (use "git reset HEAD <file>..." to unstage)
-#
-#	new file:   crowbar_engine/barclamp_dns/.gitignore
-#	new file:   crowbar_engine/barclamp_dns/Gemfile
-#	new file:   crowbar_engine/barclamp_dns/Rakefile
-#	new file:   crowbar_engine/barclamp_dns/app/assets/images/barclamp_dns/.gitkeep
-#	new file:   crowbar_engine/barclamp_dns/app/assets/javascripts/barclamp_dns/application.js
-#	new file:   crowbar_engine/barclamp_dns/app/assets/stylesheets/barclamp_dns/application.css
-#	new file:   crowbar_engine/barclamp_dns/app/controllers/barclamp_dns/application_controller.rb
-#	new file:   crowbar_engine/barclamp_dns/app/controllers/barclamp_dns/barclamps_controller.rb
-#	new file:   crowbar_engine/barclamp_dns/app/helpers/barclamp_dns/application_helper.rb
-#	new file:   crowbar_engine/barclamp_dns/app/models/barclamp_dns/barclamp.rb
-#	new file:   crowbar_engine/barclamp_dns/app/models/barclamp_dns/dns_service.rb
-#	new file:   crowbar_engine/barclamp_dns/app/views/barclamp_dns/_edit_deployment.html.haml
-#	new file:   crowbar_engine/barclamp_dns/app/views/layouts/barclamp_dns/application.html.erb
-#	new file:   crowbar_engine/barclamp_dns/barclamp_dns.gemspec
-#	new file:   crowbar_engine/barclamp_dns/config/initializers/api.rb
-#	new file:   crowbar_engine/barclamp_dns/config/locales/en.yml
-#	new file:   crowbar_engine/barclamp_dns/config/routes.rb
-#	new file:   crowbar_engine/barclamp_dns/db/migrate/20120801015023_barclamp_import_dns.rb
-#	new file:   crowbar_engine/barclamp_dns/lib/barclamp_dns.rb
-#	new file:   crowbar_engine/barclamp_dns/lib/barclamp_dns/engine.rb
-#	new file:   crowbar_engine/barclamp_dns/lib/barclamp_dns/version.rb
-#	new file:   crowbar_engine/barclamp_dns/lib/tasks/barclamp_dns_tasks.rake
-#	new file:   crowbar_engine/barclamp_dns/script/rails
-#	new file:   crowbar_engine/barclamp_dns/test/barclamp_dns_test.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/README.rdoc
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/Rakefile
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/app/assets/javascripts/application.js
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/app/assets/stylesheets/application.css
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/app/controllers/application_controller.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/app/helpers/application_helper.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/app/mailers/.gitkeep
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/app/models/.gitkeep
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/app/views/layouts/application.html.erb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config.ru
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/application.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/boot.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/database.yml
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/environment.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/environments/development.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/environments/production.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/environments/test.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/initializers/backtrace_silencers.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/initializers/inflections.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/initializers/mime_types.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/initializers/secret_token.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/initializers/session_store.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/initializers/wrap_parameters.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/locales/en.yml
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/config/routes.rb
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/lib/assets/.gitkeep
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/log/.gitkeep
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/public/404.html
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/public/422.html
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/public/500.html
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/public/favicon.ico
-#	new file:   crowbar_engine/barclamp_dns/test/dummy/script/rails
-#	new file:   crowbar_engine/barclamp_dns/test/integration/navigation_test.rb
-#	new file:   crowbar_engine/barclamp_dns/test/test_helper.rb
-#	new file:   crowbar_engine/barclamp_dns/typescript
-#
-]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ git commit -m -[K[K[Ka -m "add init[K[K[K[KDNS barclamp e nt[Kgine structure"[A]0;wayne@terminus: ~/dev/crowbar/barclamps/dnswayne@terminus:~/dev/crowbar/barclamps/dns$ [K
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C

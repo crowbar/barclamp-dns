@@ -13,7 +13,7 @@
 # limitations under the License. 
 # 
 
-class BarclampDns::BarclampsController < BarclampController
+class BarclampDns::BarclampsController < BarclampsController
 
   # Override proposal_create to inject default domain and support
   # attributes if we are creating one with a default proposal.

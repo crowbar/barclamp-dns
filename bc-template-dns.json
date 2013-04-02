@@ -9,6 +9,10 @@
       "static": { }
     }
   },
+  "roles": {
+      "dns-server": { "admin_implicit": true, "jig": "chef" },
+      "dns-client": { "implicit": true, "admin_implicit": true, "jig": "chef" }
+  },
   "deployment": {
     "dns": {
       "crowbar-revision": 0,

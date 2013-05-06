@@ -18,14 +18,14 @@ require 'ipaddr'
 
 package "bind9" do
   case node[:platform]
-  when "centos","redhat"
+  when "centos","redhat", "suse"
     package_name "bind"
   end
   action :install
 end
 package "bind9utils" do
   case node[:platform]
-  when "centos","redhat"
+  when "centos","redhat", "suse"
     package_name "bind-utils"
   end
   action :install
@@ -59,7 +59,7 @@ def make_zone(zone)
     owner "root"
     case node[:platform]
     when "ubuntu","debian" then group "bind"
-    when "centos","redhat" then group "named"
+    when "centos","redhat","suse" then group "named"
     end
     notifies :reload, "service[bind9]"
     variables(:zone => zone)
@@ -103,7 +103,7 @@ def make_zone(zone)
     owner "root"
     case node[:platform]
     when "ubuntu","debian" then group "bind"
-    when "centos","redhat" then group "named"
+    when "centos","redhat","suse" then group "named"
     end
     notifies :reload, "service[bind9]"
     variables(:zones => zonefile_entries)
@@ -170,11 +170,18 @@ when "redhat","centos"
     owner "root"
     variables :options => { "OPTIONS" => "-c /etc/bind/named.conf" }
   end
+when "suse"
+  template "/etc/sysconfig/named" do
+    source "suse-sysconfig-named.erb"
+    mode 0644
+    owner "root"
+    variables :options => { "NAMED_ARGS" => "-c /etc/bind/named.conf" }
+  end
 end
 
 service "bind9" do
   case node[:platform]
-  when "centos","redhat"
+  when "centos","redhat","suse"
     service_name "named"
   end
   supports :restart => true, :status => true, :reload => true
@@ -190,7 +197,7 @@ files.each do |file|
     source "#{file}.erb"
     case node[:platform]
     when "ubuntu","debian" then group "bind"
-    when "centos","redhat" then group "named"
+    when "centos","redhat","suse" then group "named"
     end
     mode 0644
     owner "root"
@@ -219,7 +226,7 @@ template "/etc/bind/named.conf.crowbar" do
   owner "root"
   case node[:platform]
   when "ubuntu","debian" then group "bind"
-  when "centos","redhat" then group "named"
+  when "centos","redhat","suse" then group "named"
   end
   variables(:zonefiles => node[:dns][:zone_files])
   notifies :reload, "service[bind9]"
@@ -232,9 +239,10 @@ template "/etc/bind/named.conf" do
   owner "root"
   case node[:platform]
   when "ubuntu","debian" then group "bind"
-  when "centos","redhat" then group "named"
+  when "centos","redhat","suse" then group "named"
   end
-  variables(:forwarders => node[:dns][:forwarders])
+  variables(:forwarders => node[:dns][:forwarders],
+            :allow_transfer => node[:dns][:allow_transfer])
   notifies :restart, "service[bind9]", :immediately
 end
 

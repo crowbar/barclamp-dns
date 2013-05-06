@@ -13,13 +13,21 @@ options {
 	// Uncomment the following block, and insert the addresses replacing 
 	// the all-0's placeholder.
 
-	forwarders {
 <% if !@forwarders.nil? and !@forwarders.empty? -%>
+	forwarders {
 <%   @forwarders.each do |i| -%>
-       <%= i %>;
+         <%= i %>;
 <%   end -%>
-<% end -%>
 	};
+<% end -%>
+
+<% if !@allow_transfer.nil? and !@allow_transfer.empty? -%>
+        allow-transfer {
+<%   @allow_transfer.each do |at| -%>
+          <%= at %>;
+<%   end -%>
+        };
+<% end -%>
 
 	auth-nxdomain no;    # conform to RFC1035
 	listen-on-v6 { any; };

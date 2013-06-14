@@ -1,6 +1,6 @@
 {
   "id": "bc-template-dns",
-  "description": "manages the DNS subsystem for the cluster",
+  "description": "Manages the DNS subsystem for the cluster",
   "attributes": {
     "dns": {
       "domain": "",

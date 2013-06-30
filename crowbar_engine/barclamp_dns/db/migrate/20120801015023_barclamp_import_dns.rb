@@ -14,7 +14,7 @@
 #
 class BarclampImportDns < ActiveRecord::Migration
   def up
-    Barclamp.import_1x 'dns'
+    Barclamp.import 'dns'
   end
 
   def down

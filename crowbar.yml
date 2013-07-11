@@ -27,10 +27,6 @@ barclamp:
   member:
     - crowbar
 
-jigs:
-  chef:
-    roles:
-
 crowbar:
   layout: 2.0
   order: 30

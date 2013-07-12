@@ -160,6 +160,28 @@ nodes.each do |n|
     cluster_zone[:hosts][base_name][:alias]=alias_name if alias_name
   end
 end
+
+#lets created recodrs for each allocated address wich is not belong to the node
+search(:crowbar, "id:*_network").each do |network|
+  if not network.has_key?("allocated_by_name")
+    #this is not network, or at least there is no nodes
+    next
+  end
+  net_name=network[:id].gsub(/_network$/, '').gsub('_','-')
+  network[:allocated_by_name].keys.each do |host|
+    if search(:node, "fqdn:#{host}").size > 0 or not host.match(/.#{node[:dns][:domain]}$/)
+      #this is node in crowbar terms or it not belong to our domain, so lets skip it
+      next
+    end
+    base_name=host.chomp(".#{node[:dns][:domain]}")
+    if net_name != "admin"
+      base_name="#{net_name}.#{base_name}"
+    end
+    cluster_zone[:hosts][base_name] ||= Mash.new
+    cluster_zone[:hosts][base_name][:ip4addr]=network[:allocated_by_name][host][:address]
+  end
+end
+
 zones[node[:dns][:domain]]=cluster_zone
 
 case node[:platform]

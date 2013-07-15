@@ -30,10 +30,12 @@ end
 
 dns_list << node[:dns][:nameservers]
 
-template "/etc/resolv.conf" do
-  source "resolv.conf.erb"
-  owner "root"
-  group "root"
-  mode 0644
-  variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
+unless node[:platform] == "windows"
+  template "/etc/resolv.conf" do
+    source "resolv.conf.erb"
+    owner "root"
+    group "root"
+    mode 0644
+    variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
+  end
 end

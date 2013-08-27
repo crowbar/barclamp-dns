@@ -33,7 +33,7 @@ end
 
 directory "/etc/bind"
 
-node[:dns][:zone_files]=Array.new
+node.set[:dns][:zone_files]=Array.new
 
 def populate_soa_defaults(zone)
   [ :admin,

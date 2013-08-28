@@ -27,6 +27,20 @@ barclamp:
   member:
     - crowbar
 
+roles:
+  - name: dns-server
+    jig: chef
+    flags:
+      - bootstrap
+    requires:
+      - network
+  - name: dns-client
+    jig: chef
+    flags:
+      - discovery
+    requires:
+      - dns-server
+
 crowbar:
   layout: 2.0
   order: 30

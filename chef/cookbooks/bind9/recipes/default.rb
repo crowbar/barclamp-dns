@@ -142,7 +142,7 @@ nodes.each do |n|
   n = Node.load(n.name)
   cname = n["crowbar"]["display"]["alias"] rescue nil
   cname = nil unless cname && ! cname.empty?
-  Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
+  (node["crowbar"]["network"] rescue {}).keys.each do |network|
     next unless network.address
     base_name = n[:fqdn].chomp(".#{node[:dns][:domain]}")
     alias_name = cname unless base_name == cname

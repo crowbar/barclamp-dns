@@ -33,13 +33,14 @@ roles:
     flags:
       - bootstrap
     requires:
-      - network
+      - network-admin
   - name: dns-client
     jig: chef
     flags:
       - discovery
     requires:
       - dns-server
+      - network-admin
 
 crowbar:
   layout: 2.0

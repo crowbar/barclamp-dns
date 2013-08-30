@@ -80,7 +80,7 @@ def make_zone(zone)
       next unless host[addr]
       rev_zone=Mash.new
       populate_soa_defaults rev_zone
-      rev_domain=IPAddr.new(host[addr]).reverse
+      rev_domain=IP.coerce(host[addr]).reverse
       rev_zone[:domain]=rev_domain
       rev_zone[:nameservers]=["#{zone[:nameservers].first}"]
       rev_zone[:hosts] ||= Mash.new
@@ -142,17 +142,21 @@ nodes.each do |n|
   n = Node.load(n.name)
   cname = n["crowbar"]["display"]["alias"] rescue nil
   cname = nil unless cname && ! cname.empty?
-  (node["crowbar"]["network"] rescue {}).keys.each do |network|
-    next unless network.address
+  (node["crowbar"]["network"] rescue {}).each do |netname,network|
+    next unless network["addresses"] && ! network["addresses"].empty?
+    addrs = network["addresses"].map{|a|IP::coerce(a)}
+    v4addr = addrs.detect{|a|a.kind_of?(IP::IP4)}
+    v6addr = addrs.detect{|a|a.kind_of?(IP::IP6)}
     base_name = n[:fqdn].chomp(".#{node[:dns][:domain]}")
     alias_name = cname unless base_name == cname
-    unless network.name == "admin"
-      net_name = network.name.gsub('_','-')
+    unless netname == "admin"
+      net_name = netname.gsub('_','-')
       base_name = "#{net_name}.#{base_name}"
       alias_name = "#{net_name}.#{alias_name}" if alias_name
     end
     cluster_zone[:hosts][base_name] ||= Mash.new
-    cluster_zone[:hosts][base_name][:ip4addr]=network.address
+    cluster_zone[:hosts][base_name][:ip6addr]=v6addr if v6addr
+    cluster_zone[:hosts][base_name][:ip4addr]=v4addr if v4addr
     cluster_zone[:hosts][base_name][:alias]=alias_name if alias_name
   end
 end

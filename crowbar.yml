@@ -37,6 +37,7 @@ roles:
   - name: dns-client
     jig: chef
     flags:
+      - bootstrap
       - discovery
     requires:
       - dns-server

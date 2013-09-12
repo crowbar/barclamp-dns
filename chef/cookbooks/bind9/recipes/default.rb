@@ -113,7 +113,7 @@ def make_zone(zone)
     notifies :reload, "service[bind9]"
     variables(:zones => zonefile_entries)
   end
-  node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
+  node.normal[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
 end
 
 # Create our basic zone infrastructure.

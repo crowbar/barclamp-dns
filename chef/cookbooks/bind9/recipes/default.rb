@@ -145,8 +145,8 @@ nodes.each do |n|
   (n["crowbar_wall"]["network"]["addrs"] || {} rescue {}).each do |netname,addresses|
     next if addresses.nil? || addresses.empty?
     addrs = addresses.map{|a|IP::coerce(a)}
-    v4addr = addrs.detect{|a|a.kind_of?(IP::IP4)}
-    v6addr = addrs.detect{|a|a.kind_of?(IP::IP6)}
+    v4addr = addrs.detect{|a|a.v4?}
+    v6addr = addrs.detect{|a|a.v6?}
     base_name = n.name.chomp(".#{node[:dns][:domain]}")
     alias_name = cname unless base_name == cname
     unless netname == "admin"

@@ -120,7 +120,7 @@ end
 node.set[:dns][:zones] = Mash.new unless node[:dns][:zones]
 zones = Mash.new
 localdomain = Mash.new
-localdomain[:nameservers]=["#{node[:fqdn]}."]
+localdomain[:nameservers]=["#{node[:name]}."]
 localdomain[:domain]="localhost"
 localdomain[:hosts] ||= Mash.new
 localdomain[:hosts]["@"] ||= Mash.new
@@ -131,7 +131,7 @@ zones["localhost"] = localdomain
 cluster_zone=Mash.new
 cluster_zone[:domain] ||= node[:dns][:domain]
 cluster_zone[:hosts] ||= Mash.new
-cluster_zone[:nameservers] ||= ["#{node[:fqdn]}."]
+cluster_zone[:nameservers] ||= ["#{node[:name]}."]
 populate_soa_defaults(cluster_zone)
 # Get the config environment filter
 #env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
@@ -142,12 +142,12 @@ nodes.each do |n|
   n = Node.load(n.name)
   cname = n["crowbar"]["display"]["alias"] rescue nil
   cname = nil unless cname && ! cname.empty?
-  (node["crowbar"]["network"] rescue {}).each do |netname,network|
-    next unless network["addresses"] && ! network["addresses"].empty?
-    addrs = network["addresses"].map{|a|IP::coerce(a)}
-    v4addr = addrs.detect{|a|a.kind_of?(IP::IP4)}
-    v6addr = addrs.detect{|a|a.kind_of?(IP::IP6)}
-    base_name = n[:fqdn].chomp(".#{node[:dns][:domain]}")
+  (n["crowbar_wall"]["network"]["addrs"] || {} rescue {}).each do |netname,addresses|
+    next if addresses.nil? || addresses.empty?
+    addrs = addresses.map{|a|IP::coerce(a)}
+    v4addr = addrs.detect{|a|a.v4?}
+    v6addr = addrs.detect{|a|a.v6?}
+    base_name = n.name.chomp(".#{node[:dns][:domain]}")
     alias_name = cname unless base_name == cname
     unless netname == "admin"
       net_name = netname.gsub('_','-')
@@ -155,8 +155,8 @@ nodes.each do |n|
       alias_name = "#{net_name}.#{alias_name}" if alias_name
     end
     cluster_zone[:hosts][base_name] ||= Mash.new
-    cluster_zone[:hosts][base_name][:ip6addr]=v6addr if v6addr
-    cluster_zone[:hosts][base_name][:ip4addr]=v4addr if v4addr
+    cluster_zone[:hosts][base_name][:ip6addr]=v6addr.addr if v6addr
+    cluster_zone[:hosts][base_name][:ip4addr]=v4addr.addr if v4addr
     cluster_zone[:hosts][base_name][:alias]=alias_name if alias_name
   end
 end

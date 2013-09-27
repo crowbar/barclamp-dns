@@ -9,9 +9,9 @@ $ORIGIN <%= @zone[:domain] %>.
 $TTL <%= @zone[:ttl] %>
 
 <%= @zone[:domain] -%>. IN SOA (
-    <%= @zone[:nameservers].first %>
-    <%= @zone[:admin] %>
-    <%= @zone[:serial] %>
+    <%= @nameserver %>
+    <%= @admin %>
+    <%= @serial %>
     <%= @zone[:slave_refresh] %>
     <%= @zone[:slave_retry] %>
     <%= @zone[:slave_expire] %>
@@ -19,9 +19,7 @@ $TTL <%= @zone[:ttl] %>
     )
 
 ; Nameservers
-<% @zone[:nameservers].each do |ns| -%>
-@ NS <%= ns %>
-<% end -%>
+@ NS <%= @nameserver %>
 
 ; Mail exchangers
 <% @zone[:mail_exchangers].each do |host,prio| -%>

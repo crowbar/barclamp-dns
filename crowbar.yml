@@ -34,6 +34,12 @@ roles:
       - bootstrap
     requires:
       - network-admin
+  - name: dns-database
+    jig: chef
+    flags:
+      - bootstrap
+    requires:
+      - dns-server
   - name: dns-client
     jig: chef
     flags:

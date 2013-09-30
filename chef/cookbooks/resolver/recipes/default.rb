@@ -18,22 +18,13 @@
 # limitations under the License.
 #
 
-env_filter = " AND dns_config_environment:#{node[:dns][:config][:environment]}"
-nodes = search(:node, "roles:dns-server#{env_filter}")
-
-dns_list = []
-if nodes and !nodes.empty?
-  dns_list = nodes.map { |x| x.address.addr }
-elsif node["crowbar"] and node["crowbar"]["admin_node"] and node[:dns][:forwarders]
-  dns_list << node[:dns][:forwarders]
-end
-
-dns_list << node[:dns][:nameservers]
+dns_list = (node[:crowbar][:dns][:nameservers] rescue nil) ||
+  (node[:crowbar][:dns][:server][:forwarders] rescue [])
 
 template "/etc/resolv.conf" do
   source "resolv.conf.erb"
   owner "root"
   group "root"
   mode 0644
-  variables(:nameservers => dns_list.flatten, :search => (node[:dns][:domain] rescue nil))
+  variables(:nameservers => dns_list.flatten, :search => (node[:crowbar][:dns][:domain] rescue nil))
 end

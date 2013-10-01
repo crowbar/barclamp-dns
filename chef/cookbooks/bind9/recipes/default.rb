@@ -69,10 +69,13 @@ def make_zone(zone)
   # Arrange for reverse lookup zones to be created.
   # Since there is no elegant method for doing this that takes into account
   # CIDR or IPv6, do it the excessively ugly way and create one zone per IP.
+  hostsprocessed={}
   zone[:hosts].keys.sort.each do |hostname|
     host=zone[:hosts][hostname]
     [:ip4addr, :ip6addr].each do |addr|
       next unless host[addr]
+      next if hostsprocessed[host[addr]]
+      hostsprocessed[host[addr]]=1
       rev_zone=Mash.new
       populate_soa_defaults rev_zone
       rev_domain=IPAddr.new(host[addr]).reverse

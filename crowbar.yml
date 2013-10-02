@@ -43,8 +43,7 @@ roles:
   - name: dns-client
     jig: chef
     flags:
-      - bootstrap
-      - discovery
+      - implicit
     requires:
       - dns-server
       - network-admin

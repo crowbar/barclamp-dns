@@ -17,10 +17,12 @@ class BarclampDns::Database < Role
 
 
   def on_node_create(n)
+    Rails.logger.info("dns-database: Updating for new node #{n.name}")
     rerun_my_noderoles
   end
 
   def on_node_delete(n)
+    Rails.logger.info("dns-database: Updating for removed node #{n.name}")
     rerun_my_noderoles
   end
 
@@ -51,8 +53,10 @@ class BarclampDns::Database < Role
   def rerun_my_noderoles
     r = Role.where(:name => "dns-database").first
     return if r.nil?
-    r.node_roles.committed.in_state(NodeRole::ACTIVE).each do |nr|
-      nr.run!
+    r.node_roles.committed.each do |nr|
+      # We need to re-enqueue for both active and transition here,
+      # as the previous run might not have finished yet.
+      Run.enqueue(nr) if nr.active? || nr.transition?
     end
   end
 

@@ -20,6 +20,7 @@ options {
 <%   end -%>
 	};
 <% end -%>
+	forward only;
 
 <% if !@allow_transfer.nil? and !@allow_transfer.empty? -%>
         allow-transfer {

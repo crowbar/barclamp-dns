@@ -29,18 +29,20 @@ class BarclampDns::Database < Role
   def sysdata(nr)
     hosts = {}
     # Record our host entry information first.
-    Node.all.each do |n|
-      v4addrs,v6addrs = n.addresses.partition{|a|a.v4?}
-      canonical_name = n.name + "."
-      hosts[canonical_name] = Hash.new
-      hosts[canonical_name]["ip6addr"] = v6addrs.sort.first.addr unless v6addrs.empty?
-      hosts[canonical_name]["ip4addr"] = v4addrs.sort.first.addr unless v4addrs.empty?
-      if n.alias && !canonical_name.index(n.alias)
-        hosts[canonical_name]["alias"] = n.alias
+    Role.transaction do
+      Node.all.each do |n|
+        v4addrs,v6addrs = n.addresses.partition{|a|a.v4?}
+        canonical_name = n.name + "."
+        hosts[canonical_name] = Hash.new
+        hosts[canonical_name]["ip6addr"] = v6addrs.sort.first.addr unless v6addrs.empty?
+        hosts[canonical_name]["ip4addr"] = v4addrs.sort.first.addr unless v4addrs.empty?
+        if n.alias && !canonical_name.index(n.alias)
+          hosts[canonical_name]["alias"] = n.alias
+        end
       end
     end
     # Populate the rest of the zone information
-    { "crowbar" => {
+    return { "crowbar" => {
         "dns" => {
           "hosts" => hosts
         }
@@ -51,12 +53,14 @@ class BarclampDns::Database < Role
   private
 
   def rerun_my_noderoles
-    r = Role.where(:name => "dns-database").first
-    return if r.nil?
-    r.node_roles.committed.each do |nr|
-      # We need to re-enqueue for both active and transition here,
-      # as the previous run might not have finished yet.
-      Run.enqueue(nr) if nr.active? || nr.transition?
+    NodeRole.transaction do
+      node_roles.committed.each do |nr|
+        next unless nr.active? || nr.transition?
+        # We need to re-enqueue for both active and transition here,
+        # as the previous run might not have finished yet.
+        Rails.logger.info("dns-database: Enqueuing run for #{nr.name}")
+        Run.enqueue(nr)
+      end
     end
   end
 

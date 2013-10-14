@@ -17,9 +17,11 @@ require 'json'
 class BarclampDns::Server < Role
 
   def template
+    # this is a workable solution for now, we use the admin node to determine domain (except when non-exists!)
+    domain = Node.admin.first.name.split(".",2)[1] rescue I18n.t('not_set')
     JSON.generate({"crowbar" => {
                       "dns" => {
-                        "domain" => Node.admin.first.name.split(".",2)[1],
+                        "domain" => domain,
                         "contact" => "support@localhost.localdomain",
                         "forwarders" =>  [],
                         "static" => {},

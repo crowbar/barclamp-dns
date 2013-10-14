@@ -14,9 +14,8 @@
 #
 
 en:
-  barclamp:
-    dns:
-      edit_attributes: 
-        attributes: Attributes
-      edit_deployment: 
-        deployment: Deployment
+  barclamp_dns:
+    node_roles:
+      dns-server:
+        domain: "Domain"
+        forwarders: "Forwarders"

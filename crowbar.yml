@@ -31,14 +31,12 @@ roles:
   - name: dns-server
     jig: chef
     flags:
-      - bootstrap
       - server
     requires:
       - network-admin
   - name: dns-database
     jig: chef
     flags:
-      - bootstrap
     requires:
       - dns-server
   - name: dns-client

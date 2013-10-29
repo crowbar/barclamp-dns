@@ -19,6 +19,7 @@ options {
          <%= i %>;
 <%   end -%>
 	};
+	forward only;
 <% end -%>
 
 <% if !@allow_transfer.nil? and !@allow_transfer.empty? -%>

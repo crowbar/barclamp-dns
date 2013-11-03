@@ -21,10 +21,29 @@
 dns_list = (node[:crowbar][:dns][:nameservers] rescue nil) ||
   (node[:crowbar][:dns][:server][:forwarders] rescue [])
 
+execute "Disable resolvconf" do
+  command "resolvconf --disable-updates"
+  only_if "which resolvconf &>/dev/null && resolvconf --updates-are-enabled"
+end
+
+execute "Allow changes to resolv.conf" do
+  command "chattr -i /etc/resolv.conf"
+  ignore_failure true
+end
+
+link "/etc/resolv.conf" do
+  action :delete
+  only_if do File.symlink?("/etc/resolv.conf") end
+end
+
 template "/etc/resolv.conf" do
   source "resolv.conf.erb"
   owner "root"
   group "root"
   mode 0644
   variables(:nameservers => dns_list.flatten, :search => (node[:crowbar][:dns][:domain] rescue nil))
+end
+
+execute "Lock down resolv.conf" do
+  command "chattr +i /etc/resolv.conf"
 end

@@ -58,7 +58,7 @@ class BarclampDns::Database < Role
         next unless nr.active? || nr.transition?
         # We need to re-enqueue for both active and transition here,
         # as the previous run might not have finished yet.
-        Rails.logger.info("dns-database: Enqueuing run for #{nr.name}") unless nr.nil?
+        Rails.logger.info("dns-database: Enqueuing run for #{nr.name}") 
         Run.enqueue(nr)
       end
     end

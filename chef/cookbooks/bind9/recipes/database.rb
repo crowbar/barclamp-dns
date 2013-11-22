@@ -100,6 +100,8 @@ template "/etc/bind/zone.#{zone[:domain]}" do
   variables(:zones => zonefiles)
 end
 
+include_recipe "bind9::default"
+
 # Update named.conf.crowbar to include the new zones.
 template "/etc/bind/named.conf.crowbar" do
   source "named.conf.crowbar.erb"

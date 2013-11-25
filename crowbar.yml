@@ -29,18 +29,18 @@ barclamp:
 
 roles:
   - name: dns-server
-    jig: chef
+    jig: chef-solo
     flags:
       - server
     requires:
       - network-admin
   - name: dns-database
-    jig: chef
+    jig: chef-solo
     flags:
     requires:
       - dns-server
   - name: dns-client
-    jig: chef
+    jig: chef-solo
     flags:
       - implicit
     requires:

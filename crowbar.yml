@@ -34,6 +34,10 @@ roles:
       - server
     requires:
       - network-admin
+    attribs:
+      - name: dns_servers
+        description: 'DNS servers that all Crowbar clients should use'
+        map: 'crowbar/dns/nameservers'
   - name: dns-database
     jig: chef-solo
     flags:
@@ -46,6 +50,8 @@ roles:
     requires:
       - dns-server
       - network-admin
+    wants-attribs:
+      - dns_servers
 
 crowbar:
   layout: 2.0

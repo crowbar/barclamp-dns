@@ -19,8 +19,7 @@ class BarclampDns::Server < Role
   def template
     # this is a workable solution for now, we use the admin node to determine domain (except when non-exists!)
     domain = Node.admin.first.name.split(".",2)[1] rescue I18n.t('not_set')
-    JSON.generate({"crowbar" => {
-                      "dns" => {
+    {"crowbar" => {     "dns" => {
                         "domain" => domain,
                         "contact" => "support@localhost.localdomain",
                         "forwarders" =>  [],
@@ -29,7 +28,7 @@ class BarclampDns::Server < Role
                         "slave_refresh" => "1d",
                         "slave_retry" => "2h",
                         "slave_expire" => "4w",
-                        "negative_cache" => 300}}})
+                        "negative_cache" => 300}}}
   end
 
   def sysdata(nr)

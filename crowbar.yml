@@ -29,20 +29,6 @@ crowbar:
   chef_order: 30
   proposal_schema_version: 2
 
-locale_additions:
-  en:
-    barclamp:
-      dns:
-        edit_attributes: 
-          attributes: Attributes
-          domain: Domain
-          nameservers: Name Servers
-          forwarders: Forwarders
-          allow_transfer: Allow Transfer
-          ip_list_hint: A comma-separated list of IP Addresses
-        edit_deployment: 
-          deployment: Deployment
-
 debs:
   pkgs:
     - bind9

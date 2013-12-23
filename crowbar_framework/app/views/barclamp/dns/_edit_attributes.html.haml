@@ -1,23 +1,18 @@
-%input#proposal_attributes{:type => "hidden", :name => "proposal_attributes", :value => @proposal.raw_data['attributes'][@proposal.barclamp].to_json}
-%h3.page-header
-  = t('.attributes')
-  = link_to "Raw", proposal_barclamp_path(:id => @proposal.name, :controller => @proposal.barclamp, :dep_raw => @dep_raw, :attr_raw => true), :class => "pull-right"
-.page-header-bottom
+= attributes_for @proposal do
+  .panel-sub
+    = header @dep_raw, true
 
-%div
-  %div.container
-    %p
-      %label{ :for => :domain }= t('.domain')
-      %input#domain{:type => "text", :name => "domain", :'data-default' => @proposal.raw_data['attributes']['dns']['domain'], :onchange => "update_value('domain', 'domain', 'string')"}
-    %p
-      %label{ :for => :nameservers }= t('.nameservers')
-      %input#nameservers{ :type => "text", :name => "nameservers", :value => @proposal.raw_data['attributes']['dns']['nameservers'].join(', '), :onchange => "update_value('nameservers', 'nameservers', 'array-string')" }
-      %em= t('.ip_list_hint')
-    %p
-      %label{ :for => :forwarders }= t('.forwarders')
-      %input#forwarders{ :type => "text", :name => "forwarders", :value => @proposal.raw_data['attributes']['dns']['forwarders'].join(', '), :onchange => "update_value('forwarders', 'forwarders', 'array-string')" }
-      %em= t('.ip_list_hint')
-    %p
-      %label{ :for => :allow_transfer }= t('.allow_transfer')
-      %input#allow_transfer{ :type => "text", :name => "allow_transfer", :value => @proposal.raw_data['attributes']['dns']['allow_transfer'].join(', '), :onchange => "update_value('allow_transfer', 'allow_transfer', 'array-string')" }
-      %em= t('.ip_list_hint')
+  .panel-body
+    = string_field :domain
+
+    = array_string_field :nameservers
+    %span.help-block
+      = t('.ip_list_hint')
+
+    = array_string_field :forwarders
+    %span.help-block
+      = t('.ip_list_hint')
+
+    = array_string_field :allow_transfer
+    %span.help-block
+      = t('.ip_list_hint')

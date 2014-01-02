@@ -51,7 +51,8 @@ roles:
       - dns-server
       - network-admin
     wants-attribs:
-      - dns_servers
+      - name: dns_servers
+        at: 'crowbar/dns/nameservers'
 
 crowbar:
   layout: 2.0

@@ -30,19 +30,25 @@ barclamp:
 roles:
   - name: dns-server
     jig: chef-solo
-    flags:
-      - server
     requires:
       - network-admin
     attribs:
+      - name: dns_all_data
+        description: 'All the DNS server information'
+        map: 'crowbar/dns'
       - name: dns_servers
         description: 'DNS servers that all Crowbar clients should use'
         map: 'crowbar/dns/nameservers'
+      - name: dns_domain
+        description: "The DNS domain name that Crowbar is using."
+        map: 'crowbar/dns/domain'
   - name: dns-database
     jig: chef-solo
     flags:
     requires:
       - dns-server
+    wants-attribs:
+      - dns_all_data
   - name: dns-client
     jig: chef-solo
     flags:
@@ -51,8 +57,7 @@ roles:
       - dns-server
       - network-admin
     wants-attribs:
-      - name: dns_servers
-        at: 'crowbar/dns/nameservers'
+      - dns_servers
 
 crowbar:
   layout: 2.0

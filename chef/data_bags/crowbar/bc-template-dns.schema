@@ -13,7 +13,6 @@
           "required": true,
           "mapping": {
             "domain": { "type": "str", "required": true, "name": "DomainName" },
-            "contact": { "type": "str", "required": true, "name": "Email" },
             "forwarders": {
               "type": "seq",
               "required": true,
@@ -28,13 +27,6 @@
               "type": "seq",
               "required": false,
               "sequence": [ { "type": "str" } ]
-            },
-            "static": {
-              "type": "map",
-              "required": true,
-              "mapping": {
-                = : { "type": "str", "name": "IpAddress" }
-              }
             }
           }
         }
@@ -53,6 +45,7 @@
             "crowbar-status": { "type": "str" },
             "crowbar-failed": { "type": "str" },
             "crowbar-queued": { "type": "bool" },
+            "schema-revision": { "type": "int" },
             "element_states": {
               "type": "map",
               "mapping": {

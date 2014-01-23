@@ -27,6 +27,23 @@
               "type": "seq",
               "required": false,
               "sequence": [ { "type": "str" } ]
+            },
+            "records": {
+              "type": "map",
+              "required": false,
+              "mapping": {
+                = : {
+                  "type" : "map",
+                  "required" : false,
+                  "mapping" : {
+                    "ips": {
+                      "type" : "seq",
+                      "required" : true,
+                      "sequence": [ { "type": "str", "name": "IpAddress" } ]
+                    }
+                  }
+                }
+              }
             }
           }
         }

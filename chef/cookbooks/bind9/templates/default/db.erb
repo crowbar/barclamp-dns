@@ -28,6 +28,13 @@ $TTL <%= @zone[:ttl] %>
 @ MX <%= prio -%> <%= host %>
 <% end if @zone[:mail_exchangers]-%>
 
+; Manual records
+<% @zone[:records].each do |host, values| -%>
+<% values[:ips].each do |ip| -%>
+<%= host %> IN A <%= ip %>
+<% end -%>
+<% end if @zone[:records] -%>
+
 ; Per-host records
 <% @zone[:hosts].keys.sort.each do |host|
    record=@zone[:hosts][host]

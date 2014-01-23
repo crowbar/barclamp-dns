@@ -183,6 +183,7 @@ search(:crowbar, "id:*_network").each do |network|
   end
 end
 
+cluster_zone[:records] = node[:dns][:records] || {}
 zones[node[:dns][:domain]]=cluster_zone
 
 case node[:platform]

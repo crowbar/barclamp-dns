@@ -6,13 +6,14 @@
       "domain": "pod.your.cloud.org",
       "forwarders": [ ],
       "allow_transfer": [ ],
-      "nameservers": [ ]
+      "nameservers": [ ],
+      "records": { }
     }
   },
   "deployment": {
     "dns": {
       "crowbar-revision": 0,
-      "schema-revision": 1,
+      "schema-revision": 2,
       "element_states": {
         "dns-server": [ "readying", "ready", "applying" ],
         "dns-client": [ "all" ]
@@ -33,4 +34,3 @@
     }
   }
 }
-

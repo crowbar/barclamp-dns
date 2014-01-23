@@ -8,7 +8,7 @@ en:
         allow_transfer: Allow Transfer
         ip_list_hint: A comma-separated list of IP Addresses
 
-        records: Records
+        records: Manual A Records
         record_name: Name
         record_ips: IP Addresses
         record_add: Add

@@ -31,7 +31,21 @@ package "bind9utils" do
   action :install
 end
 
-directory "/etc/bind"
+if node[:dns][:master]
+  directory "/etc/bind" do
+    owner "root"
+    group "root"
+    mode 0755
+    action :create
+  end
+else
+  directory "/etc/bind" do
+    owner "root"
+    group "named"
+    mode 0775
+    action :create
+  end
+end
 
 node.set[:dns][:zone_files]=Array.new
 
@@ -63,6 +77,7 @@ def make_zone(zone)
     end
     notifies :reload, "service[bind9]"
     variables(:zone => zone)
+    only_if { node[:dns][:master] }
   end
   zonefile_entries << zone[:domain]
 
@@ -95,10 +110,18 @@ def make_zone(zone)
         owner "root"
         notifies :reload, "service[bind9]"
         variables(:zone => rev_zone)
+        only_if { node[:dns][:master] }
       end
       zonefile_entries << rev_domain
     end
   end
+
+  if node[:dns][:master]
+    master_ip = ""
+  else
+    master_ip = node[:dns][:master_ip]
+  end
+
   Chef::Log.debug "Creating zone file for zones: #{zonefile_entries.inspect}"
   template "/etc/bind/zone.#{zone[:domain]}" do
     source "zone.erb"
@@ -109,7 +132,8 @@ def make_zone(zone)
     when "centos","redhat","suse" then group "named"
     end
     notifies :reload, "service[bind9]"
-    variables(:zones => zonefile_entries)
+    variables(:zones => zonefile_entries,
+              :master_ip => master_ip)
   end
   node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
 end
@@ -120,7 +144,7 @@ node[:dns][:admin] ||= "support.#{node[:fqdn]}."
 node[:dns][:ttl] ||= "1h"
 node[:dns][:serial] ||= 0
 node[:dns][:serial] += 1
-node[:dns][:slave_refresh] ||= "1d"
+node[:dns][:slave_refresh] ||= "2d"
 node[:dns][:slave_retry] ||= "2h"
 node[:dns][:slave_expire] ||= "4w"
 node[:dns][:negative_cache] ||= "300"
@@ -139,6 +163,11 @@ cluster_zone=Mash.new
 cluster_zone[:domain] ||= node[:dns][:domain]
 cluster_zone[:hosts] ||= Mash.new
 cluster_zone[:nameservers] ||= ["#{node[:fqdn]}."]
+if node[:dns][:master] and not node[:dns][:slave_names].nil?
+  node[:dns][:slave_names].each do |slave|
+    cluster_zone[:nameservers] << "#{slave}."
+  end
+end
 populate_soa_defaults(cluster_zone)
 # Get the config environment filter
 #env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
@@ -215,7 +244,13 @@ service "bind9" do
 end
 
 # Load up our default zones.  These never change.
-files=%w{db.0 db.255 named.conf.default-zones}
+if node[:dns][:master]
+  files=%w{db.0 db.255 named.conf.default-zones}
+  master_ip = ""
+else
+  files=%w{named.conf.default-zones}
+  master_ip = node[:dns][:master_ip]
+end
 files.each do |file|
   template "/etc/bind/#{file}" do
     source "#{file}.erb"
@@ -226,6 +261,7 @@ files.each do |file|
     mode 0644
     owner "root"
     notifies :reload, "service[bind9]"
+    variables(:master_ip => master_ip)
   end
 end
 
@@ -256,6 +292,13 @@ template "/etc/bind/named.conf.crowbar" do
   notifies :reload, "service[bind9]"
 end
 
+if node[:dns][:master]
+  allow_transfer = node[:dns][:allow_transfer] + node[:dns][:slave_ips]
+  allow_transfer = allow_transfer.uniq.sort.compact.delete_if {|n| n.empty? }
+else
+  allow_transfer = []
+end
+
 # Rewrite our default configuration file
 template "/etc/bind/named.conf" do
   source "named.conf.erb"
@@ -266,7 +309,7 @@ template "/etc/bind/named.conf" do
   when "centos","redhat","suse" then group "named"
   end
   variables(:forwarders => node[:dns][:forwarders],
-            :allow_transfer => node[:dns][:allow_transfer])
+            :allow_transfer => allow_transfer)
   notifies :restart, "service[bind9]", :immediately
 end
 

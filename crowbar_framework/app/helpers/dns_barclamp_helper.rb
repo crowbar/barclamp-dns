@@ -18,4 +18,18 @@
 #
 
 module DnsBarclampHelper
+  def dns_role_contraints
+    {
+      "dns-server" => {
+        "unique" => false,
+        "count" => 3,
+        "admin" => true
+      },
+      "dns-client" => {
+        "unique" => false,
+        "count" => -1,
+        "admin" => true
+      }
+    }
+  end
 end

@@ -3,12 +3,22 @@
 // broadcast zones as per RFC 1912
 
 zone "0.in-addr.arpa" {
+<% if node[:dns][:master] -%>
         type master;
+<% else -%>
+        type slave;
+        masters { <%= @master_ip -%>; };
+<% end %>
         file "/etc/bind/db.0";
 };
 
 zone "255.in-addr.arpa" {
+<% if node[:dns][:master] -%>
         type master;
+<% else -%>
+        type slave;
+        masters { <%= @master_ip -%>; };
+<% end %>
         file "/etc/bind/db.255";
 };
 

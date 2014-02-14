@@ -22,7 +22,7 @@ module DnsBarclampHelper
     {
       "dns-server" => {
         "unique" => false,
-        "count" => 1,
+        "count" => 3,
         "admin" => true
       },
       "dns-client" => {

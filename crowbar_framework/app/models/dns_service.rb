@@ -61,7 +61,7 @@ class DnsService < ServiceObject
     end
 
     @logger.debug("DNS transition: leaving for #{name} for #{state}")
-    [200, NodeObject.find_node_by_name(name).to_hash ]
+    [200, { :name => name } ]
   end
 
 

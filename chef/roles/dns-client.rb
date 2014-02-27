@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 
 name "dns-client"
 description "DNS Client Role - Configures the resolver to point at the DNS server"

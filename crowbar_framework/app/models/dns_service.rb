@@ -87,7 +87,7 @@ class DnsService < ServiceObject
 
     slave_ips = []
     nodes = NodeObject.all
-    admin = nodes.select { |n| n.admin? }
+    admin = nodes.select { |n| n.admin? }.first
     tnodes = role.override_attributes["dns"]["elements"]["dns-server"]
 
     slave_nodes = tnodes
@@ -102,8 +102,8 @@ class DnsService < ServiceObject
       end
     end
     if master.nil?
-      if tnodes.include?(admin[0].name)
-        master = admin[0]
+      if tnodes.include?(admin.name)
+        master = admin
       else
         master = NodeObject.find_node_by_name tnodes.shift
       end

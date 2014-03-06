@@ -85,48 +85,38 @@ class DnsService < ServiceObject
     @logger.debug("DNS apply_role_pre_chef_call: entering #{all_nodes.inspect}")
     return if all_nodes.empty?
 
-    slave_ips = []
-    nodes = NodeObject.all
-    admin = nodes.select { |n| n.admin? }.first
     tnodes = role.override_attributes["dns"]["elements"]["dns-server"]
-
-    slave_nodes = tnodes
+    nodes = tnodes.map {|n| NodeObject.find_node_by_name n}
 
     # electing master dns-server
     master = nil
-    tnodes.each do |n|
-      node = NodeObject.find_node_by_name n
+    admin = nil
+    nodes.each do |node|
       if node[:dns][:master]
         master = node
         break
+      elsif node.admin?
+        admin = node
       end
     end
     if master.nil?
-      if tnodes.include?(admin.name)
+      unless admin.nil?
         master = admin
       else
-        master = NodeObject.find_node_by_name tnodes.shift
+        master = nodes.first
       end
     end
 
+    slave_ips = nodes.map {|n| n[:crowbar][:network][:admin][:address]}
+    slave_ips.delete(master[:crowbar][:network][:admin][:address])
+    slave_nodes = tnodes
     slave_nodes.delete(master.name)
-    slave_nodes.each do |n|
-      node = NodeObject.find_node_by_name n
-      slave_ips << node[:crowbar][:network][:admin][:address]
-    end
 
-    master[:dns][:master] = true
-    master[:dns][:master_ip] = master[:crowbar][:network][:admin][:address]
-    master[:dns][:slave_ips] = slave_ips
-    master[:dns][:slave_names] = slave_nodes
-    master.save
-
-    slave_nodes.each do |n|
-      node = NodeObject.find_node_by_name n
+    nodes.each do |node|
       node[:dns][:master_ip] = master[:crowbar][:network][:admin][:address]
       node[:dns][:slave_ips] = slave_ips
       node[:dns][:slave_names] = slave_nodes
-      node[:dns][:master] = false
+      node[:dns][:master] = (master.name == node.name)
       node.save
     end
 

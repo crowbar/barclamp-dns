@@ -31,9 +31,18 @@ package "bind9utils" do
   action :install
 end
 
+bindgroupmaster, bindgroup = case node[:platform]
+  when "ubuntu","debian"
+    [ "bind", "bind" ]
+  when "centos","redhat"
+    [ "named", "named" ]
+  when "suse"
+    [ "root", "named" ]
+end
+
 directory "/etc/bind" do
   owner "root"
-  group node[:dns][:master] ? "root" : "named"
+  group node[:dns][:master] ? bindgroupmaster : bindgroup
   mode 0755
   action :create
 end
@@ -62,10 +71,7 @@ def make_zone(zone)
     source "db.erb"
     mode 0644
     owner "root"
-    case node[:platform]
-    when "ubuntu","debian" then group "bind"
-    when "centos","redhat","suse" then group "named"
-    end
+    group "root"
     notifies :reload, "service[bind9]"
     variables(:zone => zone)
     only_if { node[:dns][:master] }
@@ -118,10 +124,7 @@ def make_zone(zone)
     source "zone.erb"
     mode 0644
     owner "root"
-    case node[:platform]
-    when "ubuntu","debian" then group "bind"
-    when "centos","redhat","suse" then group "named"
-    end
+    group "root"
     notifies :reload, "service[bind9]"
     variables(:zones => zonefile_entries,
               :master_ip => master_ip)
@@ -245,10 +248,7 @@ end
 files.each do |file|
   template "/etc/bind/#{file}" do
     source "#{file}.erb"
-    case node[:platform]
-    when "ubuntu","debian" then group "bind"
-    when "centos","redhat","suse" then group "named"
-    end
+    group bindgroup
     mode 0644
     owner "root"
     variables(:master_ip => master_ip)
@@ -275,10 +275,7 @@ template "/etc/bind/named.conf.crowbar" do
   source "named.conf.crowbar.erb"
   mode 0644
   owner "root"
-  case node[:platform]
-  when "ubuntu","debian" then group "bind"
-  when "centos","redhat","suse" then group "named"
-  end
+  group bindgroup
   variables(:zonefiles => node[:dns][:zone_files])
   notifies :reload, "service[bind9]"
 end
@@ -295,10 +292,7 @@ template "/etc/bind/named.conf" do
   source "named.conf.erb"
   mode 0644
   owner "root"
-  case node[:platform]
-  when "ubuntu","debian" then group "bind"
-  when "centos","redhat","suse" then group "named"
-  end
+  group bindgroup
   variables(:forwarders => node[:dns][:forwarders],
             :allow_transfer => allow_transfer)
   notifies :restart, "service[bind9]", :immediately

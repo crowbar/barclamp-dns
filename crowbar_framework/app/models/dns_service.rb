@@ -20,6 +20,25 @@ class DnsService < ServiceObject
     @bc_name = "dns"
   end
 
+  class << self
+    def role_constraints
+      @role_constraints ||= begin
+        {
+          "dns-server" => {
+            "unique" => false,
+            "count" => 1,
+            "admin" => true
+          },
+          "dns-client" => {
+            "unique" => false,
+            "count" => -1,
+            "admin" => true
+          }
+        }
+      end
+    end
+  end
+
   def create_proposal
     @logger.debug("DNS create_proposal: entering")
     base = super

@@ -5,6 +5,6 @@
 <%   if node[:dns][:master] -%>
 zone "<%= zone -%>" { type master; file "/etc/bind/db.<%= zone -%>"; };
 <%   else -%>
-zone "<%= zone -%>" { type slave; masters { <%= @master_ip -%>; }; file "/etc/bind/db.<%= zone -%>"; };
+zone "<%= zone -%>" { type slave; masters { <%= @master_ip -%>; }; file "/etc/bind/slave/db.<%= zone -%>"; };
 <%   end %>
 <% end %>

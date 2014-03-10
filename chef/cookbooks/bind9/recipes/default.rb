@@ -31,20 +31,22 @@ package "bind9utils" do
   action :install
 end
 
-bindgroupmaster, bindgroup = case node[:platform]
+binduser, bindgroup = case node[:platform]
   when "ubuntu","debian"
     [ "bind", "bind" ]
-  when "centos","redhat"
+  when "centos","redhat","suse"
     [ "named", "named" ]
-  when "suse"
-    [ "root", "named" ]
 end
 
-directory "/etc/bind" do
-  owner "root"
-  group node[:dns][:master] ? bindgroupmaster : bindgroup
-  mode 0755
-  action :create
+directory "/etc/bind"
+
+unless node[:dns][:master]
+  directory "/etc/bind/slave" do
+    owner binduser
+    group bindgroup
+    mode 0755
+    action :create
+  end
 end
 
 node.set[:dns][:zone_files]=Array.new
@@ -105,6 +107,7 @@ def make_zone(zone)
         source "db.erb"
         mode 0644
         owner "root"
+        group "root"
         notifies :reload, "service[bind9]"
         variables(:zone => rev_zone)
         only_if { node[:dns][:master] }
@@ -114,7 +117,7 @@ def make_zone(zone)
   end
 
   if node[:dns][:master]
-    master_ip = ""
+    master_ip = nil
   else
     master_ip = node[:dns][:master_ip]
   end
@@ -240,7 +243,7 @@ end
 # Load up our default zones.  These never change.
 if node[:dns][:master]
   files=%w{db.0 db.255 named.conf.default-zones}
-  master_ip = ""
+  master_ip = nil
 else
   files=%w{named.conf.default-zones}
   master_ip = node[:dns][:master_ip]
@@ -248,9 +251,9 @@ end
 files.each do |file|
   template "/etc/bind/#{file}" do
     source "#{file}.erb"
-    group bindgroup
     mode 0644
     owner "root"
+    group bindgroup
     variables(:master_ip => master_ip)
     notifies :reload, "service[bind9]"
   end

@@ -5,20 +5,22 @@
 zone "0.in-addr.arpa" {
 <% if node[:dns][:master] -%>
         type master;
+        file "/etc/bind/db.0";
 <% else -%>
         type slave;
         masters { <%= @master_ip -%>; };
+        file "/etc/bind/slave/db.0";
 <% end %>
-        file "/etc/bind/db.0";
 };
 
 zone "255.in-addr.arpa" {
 <% if node[:dns][:master] -%>
         type master;
+        file "/etc/bind/db.255";
 <% else -%>
         type slave;
         masters { <%= @master_ip -%>; };
+        file "/etc/bind/slave/db.255";
 <% end %>
-        file "/etc/bind/db.255";
 };
 

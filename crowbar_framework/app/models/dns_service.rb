@@ -22,20 +22,18 @@ class DnsService < ServiceObject
 
   class << self
     def role_constraints
-      @role_constraints ||= begin
-        {
-          "dns-server" => {
-            "unique" => false,
-            "count" => 1,
-            "admin" => true
-          },
-          "dns-client" => {
-            "unique" => false,
-            "count" => -1,
-            "admin" => true
-          }
+      {
+        "dns-server" => {
+          "unique" => false,
+          "count" => 1,
+          "admin" => true
+        },
+        "dns-client" => {
+          "unique" => false,
+          "count" => -1,
+          "admin" => true
         }
-      end
+      }
     end
   end
 

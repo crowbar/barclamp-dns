@@ -25,7 +25,7 @@ class DnsService < ServiceObject
       {
         "dns-server" => {
           "unique" => false,
-          "count" => 1,
+          "count" => 7,
           "admin" => true
         },
         "dns-client" => {
@@ -45,7 +45,7 @@ class DnsService < ServiceObject
   end
 
   def validate_proposal_after_save proposal
-    validate_one_for_role proposal, "dns-server"
+    validate_at_least_n_for_role proposal, "dns-server", 1
 
     super
   end
@@ -81,5 +81,46 @@ class DnsService < ServiceObject
     [200, { :name => name } ]
   end
 
+  def apply_role_pre_chef_call(old_role, role, all_nodes)
+    @logger.debug("DNS apply_role_pre_chef_call: entering #{all_nodes.inspect}")
+    return if all_nodes.empty?
+
+    tnodes = role.override_attributes["dns"]["elements"]["dns-server"]
+    nodes = tnodes.map {|n| NodeObject.find_node_by_name n}
+
+    # electing master dns-server
+    master = nil
+    admin = nil
+    nodes.each do |node|
+      if node[:dns][:master]
+        master = node
+        break
+      elsif node.admin?
+        admin = node
+      end
+    end
+    if master.nil?
+      unless admin.nil?
+        master = admin
+      else
+        master = nodes.first
+      end
+    end
+
+    slave_ips = nodes.map {|n| n[:crowbar][:network][:admin][:address]}
+    slave_ips.delete(master[:crowbar][:network][:admin][:address])
+    slave_nodes = tnodes
+    slave_nodes.delete(master.name)
+
+    nodes.each do |node|
+      node[:dns][:master_ip] = master[:crowbar][:network][:admin][:address]
+      node[:dns][:slave_ips] = slave_ips
+      node[:dns][:slave_names] = slave_nodes
+      node[:dns][:master] = (master.name == node.name)
+      node.save
+    end
+
+    @logger.debug("DNS apply_role_pre_chef_call: leaving")
+  end
 
 end

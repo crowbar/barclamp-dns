@@ -28,6 +28,12 @@ options {
           <%= at %>;
 <%   end -%>
         };
+        notify yes;
+        also-notify {
+<% @allow_transfer.each do |at| -%>
+          <%= at %>;
+<% end -%>
+        };
 <% end -%>
 
 	auth-nxdomain no;    # conform to RFC1035

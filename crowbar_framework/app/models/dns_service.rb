@@ -25,7 +25,7 @@ class DnsService < ServiceObject
       {
         "dns-server" => {
           "unique" => false,
-          "count" => 1,
+          "count" => 7,
           "admin" => true
         },
         "dns-client" => {

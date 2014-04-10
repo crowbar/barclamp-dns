@@ -201,7 +201,7 @@ search(:crowbar, "id:*_network").each do |network|
       next
     end
     base_name=host.chomp(".#{node[:dns][:domain]}")
-    unless network.name == "admin"
+    unless net_name == "admin"
       base_name="#{net_name}.#{base_name}"
     end
     cluster_zone[:hosts][base_name] ||= Mash.new

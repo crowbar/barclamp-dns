@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 #
 # Copyright 2011-2013, Dell
 # Copyright 2013-2014, SUSE LINUX Products GmbH
@@ -6,7 +7,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+#  http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,28 +16,7 @@
 # limitations under the License.
 #
 
-barclamp:
-  name: 'dns'
-  display: 'DNS'
-  description: 'Domain name server configuration'
-  version: 0
-  member:
-    - 'crowbar'
-
-crowbar:
-  layout: 1
-  order: 30
-  run_order: 30
-  chef_order: 30
-  proposal_schema_version: 2
-
-debs:
-  pkgs:
-    - 'bind9'
-    - 'bind9utils'
-
-rpms:
-  pkgs:
-    - 'bind'
-    - 'bind-libs'
-    - 'bind-utils'
+module Barclamp
+  module DnsHelper
+  end
+end

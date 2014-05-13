@@ -15,28 +15,19 @@
 # limitations under the License.
 #
 
-barclamp:
-  name: 'dns'
-  display: 'DNS'
-  description: 'Domain name server configuration'
-  version: 0
-  member:
-    - 'crowbar'
+root:
+  topic_meta_data:
+    author: 'Multiple authors'
+    license: 'Apache 2'
+    copyright: '2014 by Dell, Inc'
+    date: 'June 1, 2012'
+    order: 'alpha'
+    url: '/crowbar/crowbar/1.0'
+    format: 'markdown'
 
-crowbar:
-  layout: 1
-  order: 30
-  run_order: 30
-  chef_order: 30
-  proposal_schema_version: 2
-
-debs:
-  pkgs:
-    - 'bind9'
-    - 'bind9utils'
-
-rpms:
-  pkgs:
-    - 'bind'
-    - 'bind-libs'
-    - 'bind-utils'
+  barclamps:
+    dns:
+      topic_meta_data:
+        file: 'index'
+        url: '/crowbar/crowbar/1.0?selected=dns'
+        order: 100

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 
 name "dns-server"
 description "DNS Server Role - DNS server for the cloud"

@@ -15,28 +15,21 @@
 # limitations under the License.
 #
 
-barclamp:
-  name: 'dns'
-  display: 'DNS'
-  description: 'Domain name server configuration'
-  version: 0
-  member:
-    - 'crowbar'
+en:
+  barclamp:
+    dns:
+      edit_attributes:
+        domain: 'Domain'
+        nameservers: 'Name Servers'
+        forwarders: 'Forwarders'
+        allow_transfer: 'Allow Transfer'
+        ip_list_hint: 'A comma-separated list of IP Addresses'
 
-crowbar:
-  layout: 1
-  order: 30
-  run_order: 30
-  chef_order: 30
-  proposal_schema_version: 2
-
-debs:
-  pkgs:
-    - 'bind9'
-    - 'bind9utils'
-
-rpms:
-  pkgs:
-    - 'bind'
-    - 'bind-libs'
-    - 'bind-utils'
+        records: 'Manual A Records'
+        record_name: 'Name'
+        record_ips: 'IP Addresses'
+        record_add: 'Add'
+        record_remove: 'Remove'
+        record_invalid: 'Name and IP Addresses must not be empty!'
+        record_duplicate: 'There is already a record for this name defined!'
+        no_records: 'Currently there are no records defined'

@@ -1,6 +1,6 @@
 = attributes_for @proposal do
   .panel-sub
-    = header @dep_raw, true
+    = header dep_raw, true
 
   .panel-body
     = string_field :domain
@@ -21,7 +21,7 @@
       %legend
         = t(".records")
 
-      %table.table.table-middle{ "data-dynamic" => "#record-entries", "data-namespace" => "records", "data-optional" => "", "data-invalid" => t(".record_invalid"), "data-duplicate" => t(".record_duplicate") }
+      %table.table.table-middle{ data: { dynamic: "#record-entries", namespace: "records", optional: "", invalid: t(".record_invalid"), duplicate: t(".record_duplicate") } }
         %thead
           %tr
             %th.col-sm-3
@@ -35,24 +35,24 @@
         %tfoot
           %tr
             %td
-              = text_field_tag "record[name]", "", :placeholder => t(".record_name"), :class => "form-control", "data-name" => "name", "data-type" => "string"
+              = text_field_tag "record[name]", "", placeholder: t(".record_name"), class: "form-control", data: { name: "name", type: "string" }
             %td
-              = text_field_tag "record[ips]", "", :placeholder => t(".record_ips"), :class => "form-control", "data-name" => "ips", "data-type" => "array-string"
+              = text_field_tag "record[ips]", "", placeholder: t(".record_ips"), class: "form-control", data: { name: "ips", type: "array-string" }
             %td
-              = link_to t(".record_add"), "#", :class => "btn btn-default btn-block", "data-add" => true
+              = link_to t(".record_add"), "#", class: "btn btn-default btn-block", data: { add: true }
 
 %script#record-entries{ :type => "text/x-handlebars-template" }
   {{#each entries}}
   %tr.edit
     %td
-      = text_field_tag "record[name]", "{{name}}", :placeholder => t(".record_name"), :class => "form-control", :disabled => "disabled"
+      = text_field_tag "record[name]", "{{name}}", placeholder: t(".record_name"), class: "form-control", disabled: "disabled"
     %td
-      = text_field_tag "record[ips]", "{{ips}}", :placeholder => t(".record_ips"), :class => "form-control", "data-update" => "records/{{name}}/ips", "data-name" => "ips", "data-type" => "array-string"
+      = text_field_tag "record[ips]", "{{ips}}", placeholder: t(".record_ips"), class: "form-control", data: { update: "records/{{name}}/ips", name: "ips", type: "array-string" }
     %td
-      = link_to t(".record_remove"), "#", :class => "btn btn-default btn-block", "data-remove" => "{{name}}"
+      = link_to t(".record_remove"), "#", class: "btn btn-default btn-block", data: { remove: "{{name}}" }
   {{else}}
   %tr
-    %td{ :colspan => 3 }
+    %td{ colspan: 3 }
       .empty.alert.alert-info.text-center
         = t(".no_records")
   {{/each}}

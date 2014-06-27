@@ -13,6 +13,7 @@
   "deployment": {
     "dns": {
       "crowbar-revision": 0,
+      "crowbar-applied": false,
       "schema-revision": 2,
       "element_states": {
         "dns-server": [ "readying", "ready", "applying" ],

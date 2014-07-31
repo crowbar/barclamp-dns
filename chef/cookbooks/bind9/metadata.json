@@ -35,6 +35,8 @@
   "replacing": {
   },
   "dependencies": {
+    "resolver": ">= 0.0.0",
+    "utils": ">= 0.0.0"
   },
   "groupings": {
   },

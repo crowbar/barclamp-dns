@@ -129,7 +129,7 @@ def make_zone(zone)
     owner "root"
     group "root"
     notifies :reload, "service[bind9]"
-    variables(:zones => zonefile_entries,
+    variables(:zonefile_entries => zonefile_entries,
               :master_ip => master_ip)
   end
   node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"

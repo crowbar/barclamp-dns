@@ -51,21 +51,29 @@ end
 
 node.set[:dns][:zone_files]=Array.new
 
-def populate_soa_defaults(zone)
-  [ :admin,
-    :ttl,
-    :serial,
-    :slave_refresh,
-    :slave_retry,
-    :slave_expire,
-    :negative_cache ].each do |k|
-    zone[k] ||= node[:dns][k]
+def populate_soa(zone)
+  defaults = {
+    :admin => "support.#{node[:fqdn]}.",
+    :ttl => "1h",
+    :serial => node[:dns][:serial],
+    :slave_refresh => "2d",
+    :slave_retry => "2h",
+    :slave_expire => "4w",
+    :negative_cache => "300"
+  }
+
+  have_attribute_for_domain = node[:dns][:zones].has_key? zone[:domain]
+
+  defaults.keys.each do |k|
+    zone[k] ||= node[:dns][:zones][zone[:domain]][k] if have_attribute_for_domain && k != :serial
+    zone[k] ||= defaults[k]
   end
+
   zone
 end
 def make_zone(zone)
   # copy over SOA records that we have not overridden
-  populate_soa_defaults zone
+  populate_soa zone
   zonefile_entries=Array.new
   Chef::Log.debug "Processing zone: #{zone.inspect}"
   # Arrange for the forward lookup zone to be created.
@@ -91,7 +99,7 @@ def make_zone(zone)
       next if hostsprocessed[host[addr]]
       hostsprocessed[host[addr]]=1
       rev_zone=Mash.new
-      populate_soa_defaults rev_zone
+      populate_soa rev_zone
       rev_domain=IPAddr.new(host[addr]).reverse
       rev_zone[:domain]=rev_domain
       rev_zone[:nameservers]=["#{zone[:nameservers].first}"]
@@ -135,18 +143,10 @@ def make_zone(zone)
   node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
 end
 
-# Create our basic zone infrastructure.
-node[:dns][:domain] ||= node[:fqdn].split('.')[1..-1].join(".")
-node[:dns][:admin] ||= "support.#{node[:fqdn]}."
-node[:dns][:ttl] ||= "1h"
 node[:dns][:serial] ||= 0
 node[:dns][:serial] += 1
-node[:dns][:slave_refresh] ||= "2d"
-node[:dns][:slave_retry] ||= "2h"
-node[:dns][:slave_expire] ||= "4w"
-node[:dns][:negative_cache] ||= "300"
-node[:dns][:zones] ||= Mash.new
 
+# Create our basic zone infrastructure.
 zones = Mash.new
 
 localhost_zone = Mash.new
@@ -167,7 +167,7 @@ if node[:dns][:master] and not node[:dns][:slave_names].nil?
     cluster_zone[:nameservers] << "#{slave}."
   end
 end
-populate_soa_defaults(cluster_zone)
+populate_soa(cluster_zone)
 # Get the config environment filter
 #env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
 env_filter = "*:*" # Get all nodes for now.  This is a hack around a timing issue in ganglia.

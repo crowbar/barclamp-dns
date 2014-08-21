@@ -158,10 +158,10 @@ localhost_zone[:hosts]["@"][:ip4addr] = "127.0.0.1"
 localhost_zone[:hosts]["@"][:ip6addr] = "::1"
 zones["localhost"] = localhost_zone
 
-cluster_zone=Mash.new
-cluster_zone[:domain] ||= node[:dns][:domain]
-cluster_zone[:hosts] ||= Mash.new
-cluster_zone[:nameservers] ||= ["#{node[:fqdn]}."]
+cluster_zone = Mash.new
+cluster_zone[:domain] = node[:dns][:domain]
+cluster_zone[:hosts] = Mash.new
+cluster_zone[:nameservers] = ["#{node[:fqdn]}."]
 if node[:dns][:master] and not node[:dns][:slave_names].nil?
   node[:dns][:slave_names].each do |slave|
     cluster_zone[:nameservers] << "#{slave}."
@@ -186,9 +186,9 @@ nodes.each do |n|
       base_name = "#{net_name}.#{base_name}"
       alias_name = "#{net_name}.#{alias_name}" if alias_name
     end
-    cluster_zone[:hosts][base_name] ||= Mash.new
-    cluster_zone[:hosts][base_name][:ip4addr]=network.address
-    cluster_zone[:hosts][base_name][:alias]=alias_name if alias_name
+    cluster_zone[:hosts][base_name] = Mash.new
+    cluster_zone[:hosts][base_name][:ip4addr] = network.address
+    cluster_zone[:hosts][base_name][:alias] = alias_name if alias_name
   end
 end
 
@@ -206,13 +206,13 @@ search(:crowbar, "id:*_network").each do |network|
     unless net_name == "admin"
       base_name="#{net_name}.#{base_name}"
     end
-    cluster_zone[:hosts][base_name] ||= Mash.new
-    cluster_zone[:hosts][base_name][:ip4addr]=network[:allocated_by_name][host][:address]
+    cluster_zone[:hosts][base_name] = Mash.new
+    cluster_zone[:hosts][base_name][:ip4addr] = network[:allocated_by_name][host][:address]
   end
 end
 
 cluster_zone[:records] = node[:dns][:records] || {}
-zones[node[:dns][:domain]]=cluster_zone
+zones[node[:dns][:domain]] = cluster_zone
 
 case node[:platform]
 when "redhat","centos"

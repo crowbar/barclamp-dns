@@ -55,7 +55,7 @@ def populate_soa(zone)
   defaults = {
     :admin => "support.#{node[:fqdn]}.",
     :ttl => "1h",
-    :serial => node[:dns][:serial],
+    :serial => Time.now.to_i,
     :slave_refresh => "2d",
     :slave_retry => "2h",
     :slave_expire => "4w",
@@ -65,7 +65,7 @@ def populate_soa(zone)
   have_attribute_for_domain = node[:dns][:zones].has_key? zone[:domain]
 
   defaults.keys.each do |k|
-    zone[k] ||= node[:dns][:zones][zone[:domain]][k] if have_attribute_for_domain && k != :serial
+    zone[k] ||= node[:dns][:zones][zone[:domain]][k] if have_attribute_for_domain
     zone[k] ||= defaults[k]
   end
 
@@ -143,9 +143,6 @@ def make_zone(zone)
   node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
 end
 
-node[:dns][:serial] ||= 0
-node[:dns][:serial] += 1
-
 # Create our basic zone infrastructure.
 zones = Mash.new
 
@@ -157,6 +154,9 @@ localhost_zone[:hosts] = Mash.new
 localhost_zone[:hosts]["@"] = Mash.new
 localhost_zone[:hosts]["@"][:ip4addr] = "127.0.0.1"
 localhost_zone[:hosts]["@"][:ip6addr] = "::1"
+if node[:dns][:zones]["localhost"].to_hash != localhost_zone.to_hash
+  localhost_zone[:serial] = Time.now.to_i
+end
 zones["localhost"] = localhost_zone
 
 cluster_zone = Mash.new
@@ -217,6 +217,10 @@ if node[:dns][:records].nil?
 else
   # we do not want a reference to the chef attribute (since we will save this as an attribute)
   cluster_zone[:records] = node[:dns][:records].to_hash
+end
+
+if node[:dns][:zones][node[:dns][:domain]].to_hash != cluster_zone.to_hash
+  cluster_zone[:serial] = Time.now.to_i
 end
 
 zones[node[:dns][:domain]] = cluster_zone

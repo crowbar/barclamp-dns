@@ -51,7 +51,7 @@ end
 
 node.set[:dns][:zone_files]=Array.new
 
-def populate_soa(zone)
+def populate_soa(zone, old_zone = nil)
   defaults = {
     :admin => "support.#{node[:fqdn]}.",
     :ttl => "1h",
@@ -62,10 +62,8 @@ def populate_soa(zone)
     :negative_cache => "300"
   }
 
-  have_attribute_for_domain = node[:dns][:zones].has_key? zone[:domain]
-
   defaults.keys.each do |k|
-    zone[k] ||= node[:dns][:zones][zone[:domain]][k] if have_attribute_for_domain
+    zone[k] ||= old_zone[k] unless old_zone.nil?
     zone[k] ||= defaults[k]
   end
 
@@ -99,7 +97,7 @@ def make_zone(zone)
       next if hostsprocessed[host[addr]]
       hostsprocessed[host[addr]]=1
       rev_zone=Mash.new
-      populate_soa rev_zone
+      populate_soa rev_zone, zone
       rev_domain=IPAddr.new(host[addr]).reverse
       rev_zone[:domain]=rev_domain
       rev_zone[:nameservers]=["#{zone[:nameservers].first}"]
@@ -148,7 +146,7 @@ zones = Mash.new
 
 localhost_zone = Mash.new
 localhost_zone[:domain] = "localhost"
-populate_soa(localhost_zone)
+populate_soa(localhost_zone, node[:dns][:zones]["localhost"])
 localhost_zone[:nameservers] = ["#{node[:fqdn]}."]
 localhost_zone[:hosts] = Mash.new
 localhost_zone[:hosts]["@"] = Mash.new
@@ -161,7 +159,7 @@ zones["localhost"] = localhost_zone
 
 cluster_zone = Mash.new
 cluster_zone[:domain] = node[:dns][:domain]
-populate_soa(cluster_zone)
+populate_soa(cluster_zone, node[:dns][:zones][node[:dns][:domain]])
 cluster_zone[:nameservers] = ["#{node[:fqdn]}."]
 if node[:dns][:master] and not node[:dns][:slave_names].nil?
   node[:dns][:slave_names].each do |slave|

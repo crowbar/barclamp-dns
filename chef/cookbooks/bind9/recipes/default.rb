@@ -212,7 +212,13 @@ search(:crowbar, "id:*_network").each do |network|
   end
 end
 
-cluster_zone[:records] = node[:dns][:records] || {}
+if node[:dns][:records].nil?
+  cluster_zone[:records] = {}
+else
+  # we do not want a reference to the chef attribute (since we will save this as an attribute)
+  cluster_zone[:records] = node[:dns][:records].to_hash
+end
+
 zones[node[:dns][:domain]] = cluster_zone
 
 case node[:platform]

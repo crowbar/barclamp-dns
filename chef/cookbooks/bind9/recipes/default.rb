@@ -146,15 +146,17 @@ node[:dns][:slave_retry] ||= "2h"
 node[:dns][:slave_expire] ||= "4w"
 node[:dns][:negative_cache] ||= "300"
 node[:dns][:zones] ||= Mash.new
+
 zones = Mash.new
-localdomain = Mash.new
-localdomain[:nameservers]=["#{node[:fqdn]}."]
-localdomain[:domain]="localhost"
-localdomain[:hosts] ||= Mash.new
-localdomain[:hosts]["@"] ||= Mash.new
-localdomain[:hosts]["@"][:ip4addr]="127.0.0.1"
-localdomain[:hosts]["@"][:ip6addr]="::1"
-zones["localhost"] = localdomain
+
+localhost_zone = Mash.new
+localhost_zone[:nameservers] = ["#{node[:fqdn]}."]
+localhost_zone[:domain] = "localhost"
+localhost_zone[:hosts] = Mash.new
+localhost_zone[:hosts]["@"] = Mash.new
+localhost_zone[:hosts]["@"][:ip4addr] = "127.0.0.1"
+localhost_zone[:hosts]["@"][:ip6addr] = "::1"
+zones["localhost"] = localhost_zone
 
 cluster_zone=Mash.new
 cluster_zone[:domain] ||= node[:dns][:domain]

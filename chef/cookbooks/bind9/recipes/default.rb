@@ -99,9 +99,9 @@ def make_zone(zone)
       rev_zone=Mash.new
       populate_soa rev_zone, zone
       rev_domain=IPAddr.new(host[addr]).reverse
-      rev_zone[:domain]=rev_domain
-      rev_zone[:nameservers]=["#{zone[:nameservers].first}"]
-      rev_zone[:hosts] ||= Mash.new
+      rev_zone[:domain] = rev_domain
+      rev_zone[:nameservers] = zone[:nameservers]
+      rev_zone[:hosts] = Mash.new
       rev_zone[:hosts]["#{rev_domain}."] = Mash.new
       rev_zone[:hosts]["#{rev_domain}."][:pointer]= if hostname == "@"
                                                       "#{zone[:domain]}."

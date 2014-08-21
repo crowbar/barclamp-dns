@@ -150,8 +150,9 @@ node[:dns][:serial] += 1
 zones = Mash.new
 
 localhost_zone = Mash.new
-localhost_zone[:nameservers] = ["#{node[:fqdn]}."]
 localhost_zone[:domain] = "localhost"
+populate_soa(localhost_zone)
+localhost_zone[:nameservers] = ["#{node[:fqdn]}."]
 localhost_zone[:hosts] = Mash.new
 localhost_zone[:hosts]["@"] = Mash.new
 localhost_zone[:hosts]["@"][:ip4addr] = "127.0.0.1"
@@ -160,14 +161,14 @@ zones["localhost"] = localhost_zone
 
 cluster_zone = Mash.new
 cluster_zone[:domain] = node[:dns][:domain]
-cluster_zone[:hosts] = Mash.new
+populate_soa(cluster_zone)
 cluster_zone[:nameservers] = ["#{node[:fqdn]}."]
 if node[:dns][:master] and not node[:dns][:slave_names].nil?
   node[:dns][:slave_names].each do |slave|
     cluster_zone[:nameservers] << "#{slave}."
   end
 end
-populate_soa(cluster_zone)
+cluster_zone[:hosts] = Mash.new
 # Get the config environment filter
 #env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
 env_filter = "*:*" # Get all nodes for now.  This is a hack around a timing issue in ganglia.

@@ -51,21 +51,27 @@ end
 
 node.set[:dns][:zone_files]=Array.new
 
-def populate_soa_defaults(zone)
-  [ :admin,
-    :ttl,
-    :serial,
-    :slave_refresh,
-    :slave_retry,
-    :slave_expire,
-    :negative_cache ].each do |k|
-    zone[k] ||= node[:dns][k]
+def populate_soa(zone, old_zone = nil)
+  defaults = {
+    :admin => "support.#{node[:fqdn]}.",
+    :ttl => "1h",
+    :serial => Time.now.to_i,
+    :slave_refresh => "2d",
+    :slave_retry => "2h",
+    :slave_expire => "4w",
+    :negative_cache => "300"
+  }
+
+  defaults.keys.each do |k|
+    zone[k] ||= old_zone[k] unless old_zone.nil?
+    zone[k] ||= defaults[k]
   end
+
   zone
 end
 def make_zone(zone)
   # copy over SOA records that we have not overridden
-  populate_soa_defaults zone
+  populate_soa zone
   zonefile_entries=Array.new
   Chef::Log.debug "Processing zone: #{zone.inspect}"
   # Arrange for the forward lookup zone to be created.
@@ -91,11 +97,11 @@ def make_zone(zone)
       next if hostsprocessed[host[addr]]
       hostsprocessed[host[addr]]=1
       rev_zone=Mash.new
-      populate_soa_defaults rev_zone
+      populate_soa rev_zone, zone
       rev_domain=IPAddr.new(host[addr]).reverse
-      rev_zone[:domain]=rev_domain
-      rev_zone[:nameservers]=["#{zone[:nameservers].first}"]
-      rev_zone[:hosts] ||= Mash.new
+      rev_zone[:domain] = rev_domain
+      rev_zone[:nameservers] = zone[:nameservers]
+      rev_zone[:hosts] = Mash.new
       rev_zone[:hosts]["#{rev_domain}."] = Mash.new
       rev_zone[:hosts]["#{rev_domain}."][:pointer]= if hostname == "@"
                                                       "#{zone[:domain]}."
@@ -129,43 +135,38 @@ def make_zone(zone)
     owner "root"
     group "root"
     notifies :reload, "service[bind9]"
-    variables(:zones => zonefile_entries,
+    variables(:zonefile_entries => zonefile_entries,
               :master_ip => master_ip)
   end
   node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
 end
 
 # Create our basic zone infrastructure.
-node[:dns][:domain] ||= node[:fqdn].split('.')[1..-1].join(".")
-node[:dns][:admin] ||= "support.#{node[:fqdn]}."
-node[:dns][:ttl] ||= "1h"
-node[:dns][:serial] ||= 0
-node[:dns][:serial] += 1
-node[:dns][:slave_refresh] ||= "2d"
-node[:dns][:slave_retry] ||= "2h"
-node[:dns][:slave_expire] ||= "4w"
-node[:dns][:negative_cache] ||= "300"
-node[:dns][:zones] ||= Mash.new
 zones = Mash.new
-localdomain = Mash.new
-localdomain[:nameservers]=["#{node[:fqdn]}."]
-localdomain[:domain]="localhost"
-localdomain[:hosts] ||= Mash.new
-localdomain[:hosts]["@"] ||= Mash.new
-localdomain[:hosts]["@"][:ip4addr]="127.0.0.1"
-localdomain[:hosts]["@"][:ip6addr]="::1"
-zones["localhost"] = localdomain
 
-cluster_zone=Mash.new
-cluster_zone[:domain] ||= node[:dns][:domain]
-cluster_zone[:hosts] ||= Mash.new
-cluster_zone[:nameservers] ||= ["#{node[:fqdn]}."]
+localhost_zone = Mash.new
+localhost_zone[:domain] = "localhost"
+populate_soa(localhost_zone, node[:dns][:zones]["localhost"])
+localhost_zone[:nameservers] = ["#{node[:fqdn]}."]
+localhost_zone[:hosts] = Mash.new
+localhost_zone[:hosts]["@"] = Mash.new
+localhost_zone[:hosts]["@"][:ip4addr] = "127.0.0.1"
+localhost_zone[:hosts]["@"][:ip6addr] = "::1"
+if node[:dns][:zones]["localhost"].to_hash != localhost_zone.to_hash
+  localhost_zone[:serial] = Time.now.to_i
+end
+zones["localhost"] = localhost_zone
+
+cluster_zone = Mash.new
+cluster_zone[:domain] = node[:dns][:domain]
+populate_soa(cluster_zone, node[:dns][:zones][node[:dns][:domain]])
+cluster_zone[:nameservers] = ["#{node[:fqdn]}."]
 if node[:dns][:master] and not node[:dns][:slave_names].nil?
   node[:dns][:slave_names].each do |slave|
     cluster_zone[:nameservers] << "#{slave}."
   end
 end
-populate_soa_defaults(cluster_zone)
+cluster_zone[:hosts] = Mash.new
 # Get the config environment filter
 #env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
 env_filter = "*:*" # Get all nodes for now.  This is a hack around a timing issue in ganglia.
@@ -184,9 +185,9 @@ nodes.each do |n|
       base_name = "#{net_name}.#{base_name}"
       alias_name = "#{net_name}.#{alias_name}" if alias_name
     end
-    cluster_zone[:hosts][base_name] ||= Mash.new
-    cluster_zone[:hosts][base_name][:ip4addr]=network.address
-    cluster_zone[:hosts][base_name][:alias]=alias_name if alias_name
+    cluster_zone[:hosts][base_name] = Mash.new
+    cluster_zone[:hosts][base_name][:ip4addr] = network.address
+    cluster_zone[:hosts][base_name][:alias] = alias_name if alias_name
   end
 end
 
@@ -204,13 +205,23 @@ search(:crowbar, "id:*_network").each do |network|
     unless net_name == "admin"
       base_name="#{net_name}.#{base_name}"
     end
-    cluster_zone[:hosts][base_name] ||= Mash.new
-    cluster_zone[:hosts][base_name][:ip4addr]=network[:allocated_by_name][host][:address]
+    cluster_zone[:hosts][base_name] = Mash.new
+    cluster_zone[:hosts][base_name][:ip4addr] = network[:allocated_by_name][host][:address]
   end
 end
 
-cluster_zone[:records] = node[:dns][:records] || {}
-zones[node[:dns][:domain]]=cluster_zone
+if node[:dns][:records].nil?
+  cluster_zone[:records] = {}
+else
+  # we do not want a reference to the chef attribute (since we will save this as an attribute)
+  cluster_zone[:records] = node[:dns][:records].to_hash
+end
+
+if node[:dns][:zones][node[:dns][:domain]].to_hash != cluster_zone.to_hash
+  cluster_zone[:serial] = Time.now.to_i
+end
+
+zones[node[:dns][:domain]] = cluster_zone
 
 case node[:platform]
 when "redhat","centos"

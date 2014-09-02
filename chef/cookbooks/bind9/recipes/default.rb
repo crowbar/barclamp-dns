@@ -146,20 +146,24 @@ zones = Mash.new
 
 localhost_zone = Mash.new
 localhost_zone[:domain] = "localhost"
-populate_soa(localhost_zone, node[:dns][:zones]["localhost"])
+prev_localhost_zone = node[:dns][:zones]["localhost"] rescue nil
+populate_soa(localhost_zone, prev_localhost_zone )
 localhost_zone[:nameservers] = ["#{node[:fqdn]}."]
 localhost_zone[:hosts] = Mash.new
 localhost_zone[:hosts]["@"] = Mash.new
 localhost_zone[:hosts]["@"][:ip4addr] = "127.0.0.1"
 localhost_zone[:hosts]["@"][:ip6addr] = "::1"
-if node[:dns][:zones]["localhost"].to_hash != localhost_zone.to_hash
-  localhost_zone[:serial] = Time.now.to_i
+unless prev_localhost_zone.nil?
+  if prev_localhost_zone.to_hash != localhost_zone.to_hash
+    localhost_zone[:serial] = Time.now.to_i
+  end
 end
 zones["localhost"] = localhost_zone
 
 cluster_zone = Mash.new
 cluster_zone[:domain] = node[:dns][:domain]
-populate_soa(cluster_zone, node[:dns][:zones][node[:dns][:domain]])
+prev_cluster_zone = node[:dns][:zones][node[:dns][:domain]] rescue nil
+populate_soa(cluster_zone, prev_cluster_zone)
 cluster_zone[:nameservers] = ["#{node[:fqdn]}."]
 if node[:dns][:master] and not node[:dns][:slave_names].nil?
   node[:dns][:slave_names].each do |slave|
@@ -217,8 +221,10 @@ else
   cluster_zone[:records] = node[:dns][:records].to_hash
 end
 
-if node[:dns][:zones][node[:dns][:domain]].to_hash != cluster_zone.to_hash
-  cluster_zone[:serial] = Time.now.to_i
+unless prev_cluster_zone.nil?
+  if prev_cluster_zone.to_hash != cluster_zone.to_hash
+    cluster_zone[:serial] = Time.now.to_i
+  end
 end
 
 zones[node[:dns][:domain]] = cluster_zone

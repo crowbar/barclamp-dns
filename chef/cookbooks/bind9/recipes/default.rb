@@ -159,10 +159,26 @@ zones["localhost"] = localdomain
 cluster_zone=Mash.new
 cluster_zone[:domain] ||= node[:dns][:domain]
 cluster_zone[:hosts] ||= Mash.new
-cluster_zone[:nameservers] ||= ["#{node[:fqdn]}."]
-if node[:dns][:master] and not node[:dns][:slave_names].nil?
-  node[:dns][:slave_names].each do |slave|
-    cluster_zone[:nameservers] << "#{slave}."
+
+# Add nameservers but allow custom DNS entries when alternative
+# IP addresses are specified in proposal and alt names prefered:
+# Eg. Private clouds which require Public IP required
+#     to allow for DNS integration
+cluster_zone[:nameservers] = Array.new
+node[:dns][:records].each do |host, values|
+  node[:dns][:nameservers].each do |ns_ip|
+    if values[:ips].include?(ns_ip)
+      cluster_zone[:nameservers] << "#{host}.#{node[:dns][:domain]}."
+      break;
+    end
+  end
+end
+if !cluster_zone[:nameservers]
+  cluster_zone[:nameservers] ||= ["#{node[:fqdn]}."]
+  if node[:dns][:master] and not node[:dns][:slave_names].nil?
+    node[:dns][:slave_names].each do |slave|
+      cluster_zone[:nameservers] << "#{slave}."
+    end
   end
 end
 populate_soa_defaults(cluster_zone)

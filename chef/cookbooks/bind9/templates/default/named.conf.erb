@@ -37,6 +37,7 @@ options {
 <% end -%>
 
 	auth-nxdomain no;    # conform to RFC1035
+  listen-on { <%= @ipaddress %>; };
 	listen-on-v6 { any; };
 };
 

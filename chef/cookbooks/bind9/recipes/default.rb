@@ -307,6 +307,9 @@ else
   allow_transfer = []
 end
 
+# We would like to bind service only to ip address from admin network
+admin_addr = Chef::Recipe::Barclamp::Inventory.get_network_by_type(node, "admin").address
+
 # Rewrite our default configuration file
 template "/etc/bind/named.conf" do
   source "named.conf.erb"
@@ -314,7 +317,8 @@ template "/etc/bind/named.conf" do
   owner "root"
   group bindgroup
   variables(:forwarders => node[:dns][:forwarders],
-            :allow_transfer => allow_transfer)
+            :allow_transfer => allow_transfer,
+            :ipaddress => admin_addr)
   notifies :restart, "service[bind9]", :immediately
 end
 

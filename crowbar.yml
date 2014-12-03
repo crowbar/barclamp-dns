@@ -16,11 +16,13 @@
 #
 
 barclamp:
-  name: dns
-  display: DNS
+  name: 'dns'
+  display: 'DNS'
+  description: 'DNS Management'
   version: 0
+  user_managed: true
   member:
-    - crowbar
+    - 'crowbar'
 
 crowbar:
   layout: 1
@@ -28,14 +30,3 @@ crowbar:
   run_order: 30
   chef_order: 30
   proposal_schema_version: 3
-
-debs:
-  pkgs:
-    - bind9
-    - bind9utils
-
-rpms:
-  pkgs:
-    - bind
-    - bind-libs
-    - bind-utils

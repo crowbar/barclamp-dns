@@ -138,7 +138,7 @@ def make_zone(zone)
     variables(:zonefile_entries => zonefile_entries,
               :master_ip => master_ip)
   end
-  node[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
+  node.set[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
 end
 
 # Create our basic zone infrastructure.
@@ -318,5 +318,5 @@ template "/etc/bind/named.conf" do
   notifies :restart, "service[bind9]", :immediately
 end
 
-node[:dns][:zones]=zones
+node.set[:dns][:zones]=zones
 include_recipe "resolver"

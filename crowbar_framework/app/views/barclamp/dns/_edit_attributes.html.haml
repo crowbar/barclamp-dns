@@ -5,15 +5,15 @@
   .panel-body
     = string_field :domain
 
-    = array_string_field :nameservers
+    = array_string_field :nameservers, :only_comma => true
     %span.help-block
       = t('.ip_list_hint')
 
-    = array_string_field :forwarders
+    = array_string_field :forwarders, :only_comma => true
     %span.help-block
       = t('.ip_list_hint')
 
-    = array_string_field :allow_transfer
+    = array_string_field :allow_transfer, :only_comma => true
     %span.help-block
       = t('.ip_list_hint')
 

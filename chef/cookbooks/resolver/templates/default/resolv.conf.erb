@@ -1,7 +1,7 @@
-options rotate
 <% unless @search.nil? -%>
 search <%= @search %>
 <% end -%>
-<% @nameservers.each do |nameserver| -%>
+nameserver 127.0.0.1
+<% @nameservers.take(2).each do |nameserver| -%>
 nameserver <%= nameserver %>
 <% end -%>

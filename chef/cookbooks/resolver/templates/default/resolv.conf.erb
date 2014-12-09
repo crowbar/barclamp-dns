@@ -2,6 +2,6 @@
 search <%= @search %>
 <% end -%>
 nameserver 127.0.0.1
-<% @nameservers.take(2).each do |nameserver| -%>
+<% @nameservers.each do |nameserver| -%>
 nameserver <%= nameserver %>
 <% end -%>

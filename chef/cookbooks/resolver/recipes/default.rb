@@ -53,7 +53,7 @@ unless node[:platform] == "windows"
     owner "root"
     group "root"
     mode 0644
-    variables(:search => node[:dns][:domain])
+    variables(:nameservers => dns_list.flatten.take(2), :search => node[:dns][:domain])
   end
 
   service "dnsmasq" do

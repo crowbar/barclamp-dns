@@ -31,21 +31,33 @@ end
 dns_list << node[:dns][:nameservers]
 
 unless node[:platform] == "windows"
-  package "dnsmasq"
+  states = [ "ready", "readying", "recovering", "applying" ]
+  if states.include?(node[:state])
+    package "dnsmasq"
 
-  template "/etc/dnsmasq.conf" do
-    source "dnsmasq.conf.erb"
-    owner "root"
-    group "root"
-    mode 0644
-  end
+    template "/etc/dnsmasq.conf" do
+      source "dnsmasq.conf.erb"
+      owner "root"
+      group "root"
+      mode 0644
+    end
 
-  template "/etc/resolv-forwarders.conf" do
-    source "resolv-forwarders.conf.erb"
-    owner "root"
-    group "root"
-    mode 0644
-    variables(:nameservers => dns_list.flatten)
+    template "/etc/resolv-forwarders.conf" do
+      source "resolv-forwarders.conf.erb"
+      owner "root"
+      group "root"
+      mode 0644
+      variables(:nameservers => dns_list.flatten)
+    end
+
+    service "dnsmasq" do
+      supports :status => true, :start => true, :stop => true, :restart => true
+      action [:enable, :start]
+      subscribes :restart, "template[/etc/dnsmasq.conf]"
+      subscribes :restart, "template[/etc/resolv-forwarders.conf]"
+    end
+  
+    dns_list = dns_list.flatten.insert(0, "127.0.0.1").take(3)
   end
 
   template "/etc/resolv.conf" do
@@ -53,14 +65,6 @@ unless node[:platform] == "windows"
     owner "root"
     group "root"
     mode 0644
-    variables(:nameservers => dns_list.flatten.take(2), :search => node[:dns][:domain])
+    variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
   end
-
-  service "dnsmasq" do
-    supports :status => true, :start => true, :stop => true, :restart => true
-    action [:enable, :start]
-    subscribes :restart, "template[/etc/dnsmasq.conf]"
-    subscribes :restart, "template[/etc/resolv-forwarders.conf]"
-  end
-
 end

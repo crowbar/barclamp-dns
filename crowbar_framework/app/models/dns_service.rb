@@ -111,14 +111,14 @@ class DnsService < ServiceObject
 
     slave_ips = nodes.map {|n| n[:crowbar][:network][:admin][:address]}
     slave_ips.delete(master[:crowbar][:network][:admin][:address])
-    slave_nodes = tnodes
+    slave_nodes = tnodes.dup
     slave_nodes.delete(master.name)
 
     nodes.each do |node|
-      node[:dns][:master_ip] = master[:crowbar][:network][:admin][:address]
-      node[:dns][:slave_ips] = slave_ips
-      node[:dns][:slave_names] = slave_nodes
-      node[:dns][:master] = (master.name == node.name)
+      node.set[:dns][:master_ip] = master[:crowbar][:network][:admin][:address]
+      node.set[:dns][:slave_ips] = slave_ips
+      node.set[:dns][:slave_names] = slave_nodes
+      node.set[:dns][:master] = (master.name == node.name)
       node.save
     end
 

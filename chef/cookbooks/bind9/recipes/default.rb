@@ -56,9 +56,9 @@ def populate_soa(zone, old_zone = nil)
     :admin => "support.#{node[:fqdn]}.",
     :ttl => "1h",
     :serial => Time.now.to_i,
-    :slave_refresh => "2d",
-    :slave_retry => "2h",
-    :slave_expire => "4w",
+    :slave_refresh => "12h",
+    :slave_retry => "180",
+    :slave_expire => "8w",
     :negative_cache => "300"
   }
 

@@ -33,6 +33,10 @@ options {
             <%= at %>;
 <% end -%>
         };
+<% else -%>
+        allow-transfer {
+            "none";
+        };
 <% end -%>
         auth-nxdomain no;    # conform to RFC1035
         listen-on { <%= @ipaddress %>; };

@@ -20,10 +20,14 @@ en:
     dns:
       edit_attributes:
         domain: 'Domain'
-        nameservers: 'Name Servers'
-        forwarders: 'Forwarders'
-        allow_transfer: 'Allow Transfer'
         ip_list_hint: 'A comma-separated list of IP Addresses'
+
+        server_configuration: 'Server Configuration'
+        forwarders: 'Forwarders'
+        allow_transfer: 'Allow Zone Transfer To'
+
+        client_configuration: 'Client Configuration'
+        nameservers: 'Additional Name Servers (for use in /etc/resolv.conf)'
 
         records: 'Manual A Records'
         record_name: 'Name'

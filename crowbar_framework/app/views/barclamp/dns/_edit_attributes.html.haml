@@ -5,17 +5,25 @@
   .panel-body
     = string_field :domain
 
-    = array_string_field :nameservers
-    %span.help-block
-      = t('.ip_list_hint')
+    %fieldset
+      %legend
+        = t(".server_configuration")
 
-    = array_string_field :forwarders
-    %span.help-block
-      = t('.ip_list_hint')
+      = array_string_field :forwarders
+      %span.help-block
+        = t('.ip_list_hint')
 
-    = array_string_field :allow_transfer
-    %span.help-block
-      = t('.ip_list_hint')
+      = array_string_field :allow_transfer
+      %span.help-block
+        = t('.ip_list_hint')
+
+    %fieldset
+      %legend
+        = t(".client_configuration")
+
+      = array_string_field :nameservers
+      %span.help-block
+        = t('.ip_list_hint')
 
     %fieldset
       %legend

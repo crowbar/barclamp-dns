@@ -56,7 +56,7 @@ unless node[:platform] == "windows"
       subscribes :restart, "template[/etc/dnsmasq.conf]"
       subscribes :restart, "template[/etc/resolv-forwarders.conf]"
     end
-  
+
     dns_list = dns_list.flatten.insert(0, "127.0.0.1").take(3)
   end
 

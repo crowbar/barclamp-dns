@@ -24,11 +24,13 @@ nodes = search(:node, "roles:dns-server#{env_filter}")
 dns_list = []
 if !nodes.nil? and !nodes.empty?
   dns_list = nodes.map { |x| Chef::Recipe::Barclamp::Inventory.get_network_by_type(x, "admin").address }
+  dns_list.sort!
 elsif !node["crowbar"].nil? and node["crowbar"]["admin_node"] and !node[:dns][:forwarders].nil?
   dns_list << node[:dns][:forwarders]
 end
 
 dns_list << node[:dns][:nameservers]
+dns_list.flatten!
 
 unless node[:platform] == "windows"
   states = [ "ready", "readying", "recovering", "applying" ]
@@ -47,7 +49,7 @@ unless node[:platform] == "windows"
       owner "root"
       group "root"
       mode 0644
-      variables(:nameservers => dns_list.flatten)
+      variables(:nameservers => dns_list)
     end
 
     service "dnsmasq" do
@@ -57,7 +59,7 @@ unless node[:platform] == "windows"
       subscribes :restart, "template[/etc/resolv-forwarders.conf]"
     end
 
-    dns_list = dns_list.flatten.insert(0, "127.0.0.1").take(3)
+    dns_list = dns_list.insert(0, "127.0.0.1").take(3)
   end
 
   template "/etc/resolv.conf" do
@@ -65,6 +67,6 @@ unless node[:platform] == "windows"
     owner "root"
     group "root"
     mode 0644
-    variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
+    variables(:nameservers => dns_list, :search => node[:dns][:domain])
   end
 end

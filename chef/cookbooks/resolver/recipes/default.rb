@@ -65,6 +65,6 @@ unless node[:platform] == "windows"
     owner "root"
     group "root"
     mode 0644
-    variables(:nameservers => dns_list.flatten, :search => node[:dns][:domain])
+    variables(:nameservers => dns_list.flatten.sort, :search => node[:dns][:domain])
   end
 end

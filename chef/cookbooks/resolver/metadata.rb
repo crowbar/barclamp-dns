@@ -27,3 +27,4 @@ attribute "resolver/nameservers",
   :type => "array",
   :default => [""]
 
+depends "utils"

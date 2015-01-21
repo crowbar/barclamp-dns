@@ -31,8 +31,7 @@ end
 dns_list << node[:dns][:nameservers]
 
 unless node[:platform] == "windows"
-  states = [ "ready", "readying", "recovering", "applying" ]
-  if states.include?(node[:state]) && !node.roles.include?("dns-server")
+  unless CrowbarHelper.in_sledgehammer?(node) || node.roles.include?("dns-server")
     package "dnsmasq"
 
     template "/etc/dnsmasq.conf" do

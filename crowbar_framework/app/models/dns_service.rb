@@ -28,7 +28,10 @@ class DnsService < ServiceObject
         "dns-server" => {
           "unique" => false,
           "count" => 7,
-          "admin" => true
+          "admin" => true,
+          "exclude_platform" => {
+            "suse" => "12.0"
+          }
         },
         "dns-client" => {
           "unique" => false,

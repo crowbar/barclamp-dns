@@ -30,7 +30,6 @@ class DnsService < ServiceObject
           "count" => 7,
           "admin" => true,
           "exclude_platform" => {
-            "suse" => "12.0",
             "windows" => "/.*/"
           }
         },

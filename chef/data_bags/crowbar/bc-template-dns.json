@@ -14,7 +14,7 @@
     "dns": {
       "crowbar-revision": 0,
       "crowbar-applied": false,
-      "schema-revision": 2,
+      "schema-revision": 3,
       "element_states": {
         "dns-server": [ "readying", "ready", "applying" ],
         "dns-client": [ "all" ]
@@ -24,6 +24,10 @@
         [ "dns-server" ],
         [ "dns-client" ]
       ],
+      "element_run_list_order": {
+        "dns-server": 30,
+        "dns-client": 31
+      },
       "config": {
         "environment": "dns-base-config",
         "mode": "full",

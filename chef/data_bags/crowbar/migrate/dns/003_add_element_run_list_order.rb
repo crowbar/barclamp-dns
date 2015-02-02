@@ -15,6 +15,6 @@ def upgrade ta, td, a, d
 end
 
 def downgrade ta, td, a, d
-  a.delete('element_run_list_order')
+  d.delete('element_run_list_order')
   return a, d
 end

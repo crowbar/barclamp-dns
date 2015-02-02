@@ -33,7 +33,7 @@ dns_list << node[:dns][:nameservers]
 dns_list.flatten!
 
 unless node[:platform] == "windows"
-  unless CrowbarHelper.in_sledgehammer?(node) || node.roles.include?("dns-server")
+  unless CrowbarHelper.in_sledgehammer?(node)
     package "dnsmasq"
 
     template "/etc/dnsmasq.conf" do

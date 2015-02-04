@@ -1,8 +1,9 @@
 def upgrade ta, td, a, d
   d['element_run_list_order'] = td['element_run_list_order']
 
-  # Make sure that all dns-servers will refresh roles order for run_list
-  nodes = NodeObject.find('roles:dns-server')
+  # Make sure that all nodes have the proper run list order for the dns-client
+  # role
+  nodes = NodeObject.find('roles:dns-client')
   nodes.each do |node|
     node.delete_from_run_list('dns-client')
     node.add_to_run_list('dns-client',

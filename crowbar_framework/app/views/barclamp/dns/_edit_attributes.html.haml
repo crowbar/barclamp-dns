@@ -21,6 +21,9 @@
       %legend
         = t(".client_configuration")
 
+      .alert.alert-warning
+        = t(".server_hint")
+
       = array_string_field :nameservers
       %span.help-block
         = t('.ip_list_hint')

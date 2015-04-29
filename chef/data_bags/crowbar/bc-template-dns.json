@@ -7,14 +7,15 @@
       "forwarders": [ ],
       "allow_transfer": [ ],
       "nameservers": [ ],
-      "records": { }
+      "records": { },
+      "auto_assign_server": true
     }
   },
   "deployment": {
     "dns": {
       "crowbar-revision": 0,
       "crowbar-applied": false,
-      "schema-revision": 3,
+      "schema-revision": 4,
       "element_states": {
         "dns-server": [ "readying", "ready", "applying" ],
         "dns-client": [ "all" ]

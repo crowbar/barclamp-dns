@@ -44,6 +44,10 @@
                   }
                 }
               }
+            },
+            "auto_assign_server": {
+              "type": "bool",
+              "required": true
             }
           }
         }

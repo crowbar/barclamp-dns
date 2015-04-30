@@ -71,7 +71,7 @@ class DnsService < ServiceObject
       db = ProposalObject.find_proposal "dns", inst
       role = RoleObject.find_role_by_name "dns-config-#{inst}"
 
-      if role.override_attributes["dns"]["auto_assign_server"]
+      if role.default_attributes["dns"]["auto_assign_server"]
         if role.override_attributes["dns"]["elements"]["dns-server"].nil? or
            role.override_attributes["dns"]["elements"]["dns-server"].empty?
           @logger.debug("DNS transition: adding #{name} to dns-server role")

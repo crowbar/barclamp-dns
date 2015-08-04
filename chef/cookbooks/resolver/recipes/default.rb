@@ -41,21 +41,18 @@ unless node[:platform] == "windows"
       owner "root"
       group "root"
       mode 0644
+      # do a dup, because we'll insert 127.0.0.1 later on
+      variables(:nameservers => dns_list.dup)
     end
 
-    template "/etc/resolv-forwarders.conf" do
-      source "resolv-forwarders.conf.erb"
-      owner "root"
-      group "root"
-      mode 0644
-      variables(:nameservers => dns_list)
+    file "/etc/resolv-forwarders.conf" do
+      action :delete
     end
 
     service "dnsmasq" do
       supports :status => true, :start => true, :stop => true, :restart => true
       action [:enable, :start]
       subscribes :restart, "template[/etc/dnsmasq.conf]"
-      subscribes :restart, "template[/etc/resolv-forwarders.conf]"
     end
 
     dns_list = dns_list.insert(0, "127.0.0.1").take(3)

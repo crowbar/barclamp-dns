@@ -164,10 +164,26 @@ cluster_zone = Mash.new
 cluster_zone[:domain] = node[:dns][:domain]
 prev_cluster_zone = node[:dns][:zones][node[:dns][:domain]] rescue nil
 populate_soa(cluster_zone, prev_cluster_zone)
-cluster_zone[:nameservers] = ["#{node[:fqdn]}."]
-if node[:dns][:master] and not node[:dns][:slave_names].nil?
-  node[:dns][:slave_names].each do |slave|
-    cluster_zone[:nameservers] << "#{slave}."
+# Allow use of public IP addresses for name servers.
+# Will search public custom DNS names (from proposal)
+# for matching IP entries as specified in the nameservers
+# field (also in proposal).
+cluster_zone[:nameservers] = Array.new
+node[:dns][:records].each do |host, values|
+  node[:dns][:nameservers].each do |ns_ip|
+    if values[:ips].include?(ns_ip)
+      cluster_zone[:nameservers] << "#{host}.#{node[:dns][:domain]}."
+      break;
+    end
+  end
+end
+# Assume default behaviour if public IP's not used
+if cluster_zone[:nameservers].length == 0
+  cluster_zone[:nameservers] = ["#{node[:fqdn]}."]
+  if node[:dns][:master] and not node[:dns][:slave_names].nil?
+    node[:dns][:slave_names].each do |slave|
+      cluster_zone[:nameservers] << "#{slave}."
+    end
   end
 end
 cluster_zone[:hosts] = Mash.new

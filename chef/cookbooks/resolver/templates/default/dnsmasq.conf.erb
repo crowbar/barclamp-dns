@@ -43,7 +43,7 @@ port=53
 
 # Change this line if you want dns to get its upstream servers from
 # somewhere other that /etc/resolv.conf
-resolv-file=/etc/resolv-forwarders.conf
+#resolv-file=
 
 # By  default,  dnsmasq  will  send queries to any of the upstream
 # servers it knows about and tries to favour servers to are  known
@@ -55,7 +55,7 @@ resolv-file=/etc/resolv-forwarders.conf
 # If you don't want dnsmasq to read /etc/resolv.conf or any other
 # file, getting its servers from this file instead (see below), then
 # uncomment this.
-#no-resolv
+no-resolv
 
 # If you don't want dnsmasq to poll /etc/resolv.conf or other resolv
 # files for changes and re-read them then uncomment this.
@@ -64,6 +64,9 @@ resolv-file=/etc/resolv-forwarders.conf
 # Add other name servers here, with domain specs if they are for
 # non-public domains.
 #server=/localnet/192.168.0.1
+<% @nameservers.each do |nameserver| -%>
+server=<%= nameserver %>
+<% end -%>
 
 # Example of routing PTR queries to nameservers: this will send all
 # address->name queries for 192.168.3/24 to nameserver 10.1.2.3

@@ -25,11 +25,13 @@ dns_list = []
 if !nodes.nil? and !nodes.empty?
   dns_list = nodes.map { |x| Chef::Recipe::Barclamp::Inventory.get_network_by_type(x, "admin").address }
   dns_list.sort!
-elsif !node["crowbar"].nil? and node["crowbar"]["admin_node"] and !node[:dns][:forwarders].nil?
-  dns_list << node[:dns][:forwarders]
 end
 
-dns_list << node[:dns][:nameservers]
+if !node["crowbar"].nil? and node["crowbar"]["admin_node"] and !node[:dns][:forwarders].nil?
+  dns_list += node[:dns][:forwarders]
+end
+
+dns_list += node[:dns][:nameservers]
 dns_list.flatten!
 
 unless node[:platform] == "windows"

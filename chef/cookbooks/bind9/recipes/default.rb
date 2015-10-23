@@ -139,6 +139,8 @@ def make_zone(zone)
               :master_ip => master_ip)
   end
   node.set[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
+
+  zonefile_entries
 end
 
 # Create our basic zone infrastructure.
@@ -318,8 +320,21 @@ bash "/etc/bind/named.conf.local" do
 end
 
 # Write out the zone databases that Crowbar will be responsible for.
+entries = ["0", "255"] # see default zones that never change
 zones.keys.sort.each do |zone|
-  make_zone zones[zone]
+  entries << make_zone(zones[zone])
+end
+
+# Drop files that are not used anymore (forgotten nodes, deallocated IP, etc.)
+entries.flatten!
+db_files = Dir.glob("/etc/bind/db.*")
+db_files.each do |db_file|
+  entry = db_file["/etc/bind/db.".length..-1]
+  next if entries.include?(entry)
+
+  file db_file do
+    action :delete
+  end
 end
 
 # Update named.conf.crowbar to include the new zones.

@@ -56,6 +56,10 @@ unless node[:platform] == "windows"
       action [:enable, :start]
       subscribes :restart, "template[/etc/dnsmasq.conf]"
       subscribes :restart, "template[/etc/resolv-forwarders.conf]"
+      if node["roles"].include?("dns-server")
+        # invalidate dnsmasq cache if local zone changes
+        subscribes :reload, "template[/etc/bind/db.#{node[:dns][:domain]}]"
+      end
     end
 
     dns_list = dns_list.insert(0, "127.0.0.1").take(3)

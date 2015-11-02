@@ -139,6 +139,8 @@ def make_zone(zone)
               :master_ip => master_ip)
   end
   node.set[:dns][:zone_files] << "/etc/bind/zone.#{zone[:domain]}"
+
+  zonefile_entries
 end
 
 # Create our basic zone infrastructure.
@@ -171,6 +173,9 @@ if node[:dns][:master] and not node[:dns][:slave_names].nil?
   end
 end
 cluster_zone[:hosts] = Mash.new
+# As DHCP addresses can be re-used, we make sure to use the one node which is
+# the most recent; this requires two passes
+temporary_dhcp = {}
 # Get the config environment filter
 #env_filter = "dns_config_environment:#{node[:dns][:config][:environment]}"
 env_filter = "*:*" # Get all nodes for now.  This is a hack around a timing issue in ganglia.
@@ -180,19 +185,48 @@ nodes.each do |n|
   n = Node.load(n.name)
   cname = n["crowbar"]["display"]["alias"] rescue nil
   cname = nil unless cname && ! cname.empty?
+  base_name_no_net = n[:fqdn].chomp(".#{node[:dns][:domain]}")
+  alias_name_no_net = cname unless base_name_no_net == cname
+
   Chef::Recipe::Barclamp::Inventory.list_networks(n).each do |network|
     next unless network.address
-    base_name = n[:fqdn].chomp(".#{node[:dns][:domain]}")
-    alias_name = cname unless base_name == cname
-    unless network.name == "admin"
+    if network.name == "admin"
+      base_name = base_name_no_net
+      alias_name = alias_name_no_net
+    else
       net_name = network.name.gsub('_','-')
-      base_name = "#{net_name}.#{base_name}"
-      alias_name = "#{net_name}.#{alias_name}" if alias_name
+      base_name = "#{net_name}.#{base_name_no_net}"
+      alias_name = "#{net_name}.#{alias_name_no_net}" if alias_name_no_net
     end
     cluster_zone[:hosts][base_name] = Mash.new
     cluster_zone[:hosts][base_name][:ip4addr] = network.address
     cluster_zone[:hosts][base_name][:alias] = alias_name if alias_name
   end
+
+  # Also set DNS name with temporary DHCP address for discovered nodes
+  if n[:state] == "discovered" &&
+      !cluster_zone[:hosts].key?(base_name_no_net) &&
+      Chef::Recipe::Barclamp::Inventory.get_network_by_type(n, "admin").nil?
+    address = n[:ipaddress]
+    time = n[:ohai_time]
+    use_temporary = true
+
+    unless temporary_dhcp[address].nil?
+      temp_time, _temp_base_name, _temp_alias_name = temporary_dhcp[address]
+      use_temporary = false if time < temp_time
+    end
+
+    if use_temporary
+      temporary_dhcp[address] = [time, base_name_no_net, alias_name_no_net]
+    end
+  end
+end
+
+temporary_dhcp.each_pair do |address, value|
+  _, base_name, alias_name = value
+  cluster_zone[:hosts][base_name] = Mash.new
+  cluster_zone[:hosts][base_name][:ip4addr] = address
+  cluster_zone[:hosts][base_name][:alias] = alias_name if alias_name
 end
 
 # let's create records for allocated addresses which do not belong to a node
@@ -286,8 +320,21 @@ bash "/etc/bind/named.conf.local" do
 end
 
 # Write out the zone databases that Crowbar will be responsible for.
+entries = ["0", "255"] # see default zones that never change
 zones.keys.sort.each do |zone|
-  make_zone zones[zone]
+  entries << make_zone(zones[zone])
+end
+
+# Drop files that are not used anymore (forgotten nodes, deallocated IP, etc.)
+entries.flatten!
+db_files = Dir.glob("/etc/bind/db.*")
+db_files.each do |db_file|
+  entry = db_file["/etc/bind/db.".length..-1]
+  next if entries.include?(entry)
+
+  file db_file do
+    action :delete
+  end
 end
 
 # Update named.conf.crowbar to include the new zones.
@@ -320,6 +367,12 @@ template "/etc/bind/named.conf" do
             :allow_transfer => allow_transfer,
             :ipaddress => admin_addr)
   notifies :restart, "service[bind9]", :immediately
+end
+
+execute "reload nscd after dns config change" do
+  command "nscd -i hosts"
+  action :nothing
+  subscribes :run, "template[/etc/bind/db.#{node[:dns][:domain]}]"
 end
 
 node.set[:dns][:zones]=zones

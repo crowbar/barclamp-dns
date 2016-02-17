@@ -373,6 +373,7 @@ execute "reload nscd after dns config change" do
   command "nscd -i hosts"
   action :nothing
   subscribes :run, "template[/etc/bind/db.#{node[:dns][:domain]}]"
+  only_if { File.exist?("/var/run/nscd/nscd.pid") }
 end
 
 node.set[:dns][:zones]=zones
